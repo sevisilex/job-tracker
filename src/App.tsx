@@ -11,14 +11,14 @@ interface JobApplication {
   createdAt: string;
   appliedAt: string | null;
   rejectedAt: string | null;
-  isArchived: boolean;
+  archivedAt: string | null;
 }
 
-type FormData = Omit<JobApplication, 'id' | 'createdAt' | 'appliedAt' | 'rejectedAt' | 'isArchived'>;
+type FormData = Omit<JobApplication, 'id' | 'createdAt' | 'appliedAt' | 'rejectedAt' | 'archivedAt'>;
 
 const initDB = async (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('JobApplicationsDB', 2);
+    const request = indexedDB.open('JobApplicationsDB', 3);
     request.onerror = () => reject(request.error);
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
@@ -29,7 +29,7 @@ const initDB = async (): Promise<IDBDatabase> => {
         });
         store.createIndex('title', 'title', { unique: false });
         store.createIndex('createdAt', 'createdAt', { unique: false });
-        store.createIndex('isArchived', 'isArchived', { unique: false });
+        store.createIndex('archivedAt', 'archivedAt', { unique: false });
       }
     };
     request.onsuccess = () => resolve(request.result);
@@ -111,7 +111,7 @@ const App: React.FC = () => {
       createdAt: currentApplication?.createdAt || new Date().toISOString(),
       appliedAt: currentApplication?.appliedAt || null,
       rejectedAt: currentApplication?.rejectedAt || null,
-      isArchived: currentApplication?.isArchived || false,
+      archivedAt: currentApplication?.archivedAt || null,
       ...(currentApplication?.id ? { id: currentApplication.id } : {})
     };
     
@@ -198,19 +198,19 @@ const App: React.FC = () => {
   const handleArchiveToggle = async (app: JobApplication) => {
     if (!app.id) return;
 
-    const message = app.isArchived
+    const message = app.archivedAt
       ? 'Czy chcesz przywrócić tę aplikację z archiwum?'
       : 'Czy chcesz przenieść tę aplikację do archiwum?';
 
     if (window.confirm(message)) {
       await updateApplicationStatus(app.id, {
-        isArchived: !app.isArchived
+        archivedAt: app.archivedAt ? null : new Date().toISOString()
       });
     }
   };
 
   const filteredApplications = applications
-    .filter(app => app.isArchived === showArchived)
+    .filter(app => Boolean(app.archivedAt) === showArchived)
     .filter(app => {
       if (!searchTerm) return true;
       const searchLower = searchTerm.toLowerCase();
@@ -305,6 +305,11 @@ const App: React.FC = () => {
                   {app.rejectedAt && (
                     <p className="font-mono text-sm text-red-500">
                       Odrzucono: {new Date(app.rejectedAt).toLocaleDateString()}
+                    </p>
+                  )}
+                  {app.archivedAt && (
+                    <p className="font-mono text-sm text-yellow-600">
+                      Zarchiwizowano: {new Date(app.archivedAt).toLocaleDateString()}
                     </p>
                   )}
                 </div>
