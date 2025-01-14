@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FormEvent } from 'react';
-import { X, Edit2, Plus, Archive, RotateCcw, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import { X, Edit2, Plus, Archive, RotateCcw, CheckCircle, XCircle, Trash2, Download, Search } from 'lucide-react';
 
 interface JobApplication {
   id?: number;
@@ -19,24 +19,19 @@ type FormData = Omit<JobApplication, 'id' | 'createdAt' | 'appliedAt' | 'rejecte
 const initDB = async (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('JobApplicationsDB', 2);
-    
     request.onerror = () => reject(request.error);
-    
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      
       if (!db.objectStoreNames.contains('applications')) {
         const store = db.createObjectStore('applications', { 
           keyPath: 'id', 
           autoIncrement: true 
         });
-        
         store.createIndex('title', 'title', { unique: false });
         store.createIndex('createdAt', 'createdAt', { unique: false });
         store.createIndex('isArchived', 'isArchived', { unique: false });
       }
     };
-    
     request.onsuccess = () => resolve(request.result);
   });
 };
@@ -46,6 +41,7 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentApplication, setCurrentApplication] = useState<JobApplication | null>(null);
   const [showArchived, setShowArchived] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   
   const [formData, setFormData] = useState<FormData>({
     title: '',
@@ -54,6 +50,32 @@ const App: React.FC = () => {
     tags: [],
     url: '',
   });
+
+  const getBorderColor = (app: JobApplication): string => {
+    if (app.rejectedAt) return 'border-red-500';
+    if (app.appliedAt) return 'border-green-500';
+    return 'border-blue-500';
+  };
+
+  const handleExport = async () => {
+    const db = await initDB();
+    const transaction = db.transaction(['applications'], 'readonly');
+    const store = transaction.objectStore('applications');
+    const request = store.getAll();
+    
+    request.onsuccess = () => {
+      const data = JSON.stringify(request.result, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'job-applications.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+  };
 
   const tagsStringToArray = (tagsStr: string): string[] => {
     return tagsStr.split(',').map(tag => tag.trim().toLowerCase()).filter(tag => tag !== '');
@@ -187,7 +209,19 @@ const App: React.FC = () => {
     }
   };
 
-  const filteredApplications = applications.filter(app => app.isArchived === showArchived);
+  const filteredApplications = applications
+    .filter(app => app.isArchived === showArchived)
+    .filter(app => {
+      if (!searchTerm) return true;
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        app.title.toLowerCase().includes(searchLower) ||
+        app.description.toLowerCase().includes(searchLower) ||
+        app.location.toLowerCase().includes(searchLower) ||
+        app.url.toLowerCase().includes(searchLower) ||
+        app.tags.some(tag => tag.toLowerCase().includes(searchLower))
+      );
+    });
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -197,13 +231,22 @@ const App: React.FC = () => {
             <h1 className="text-3xl font-mono font-bold">
               {showArchived ? 'Zarchiwizowane Aplikacje' : 'Lista Aplikacji o Pracę'}
             </h1>
-            <button
-              onClick={() => setShowArchived(!showArchived)}
-              className="mt-2 text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
-            >
-              {showArchived ? <RotateCcw size={16} /> : <Archive size={16} />}
-              {showArchived ? 'Powrót do aktywnych' : 'Pokaż zarchiwizowane'}
-            </button>
+            <div className="flex gap-4 mt-2">
+              <button
+                onClick={() => setShowArchived(!showArchived)}
+                className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
+              >
+                {showArchived ? <RotateCcw size={16} /> : <Archive size={16} />}
+                {showArchived ? 'Powrót do aktywnych' : 'Pokaż zarchiwizowane'}
+              </button>
+              <button
+                onClick={handleExport}
+                className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
+              >
+                <Download size={16} />
+                Eksportuj wszystko
+              </button>
+            </div>
           </div>
           {!showArchived && (
             <button
@@ -216,11 +259,24 @@ const App: React.FC = () => {
           )}
         </div>
 
+        <div className="mb-4">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Szukaj w tytułach, tagach, lokalizacji..."
+              className="w-full p-2 pl-10 border rounded font-mono"
+            />
+            <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+          </div>
+        </div>
+
         <div className="space-y-4">
           {filteredApplications.map((app) => (
             <div
               key={app.id}
-              className="bg-white p-4 rounded shadow-sm border-l-4 border-blue-500"
+              className={`bg-white p-4 rounded shadow-sm border-l-4 ${getBorderColor(app)}`}
             >
               <div className="flex justify-between items-start">
                 <div>
