@@ -11,6 +11,8 @@ const List: React.FC = () => {
   const [currentApplication, setCurrentApplication] = useState<JobApplication | null>(null);
   const [showArchived, setShowArchived] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isApplied, setIsApplied] = useState(true);
+  const [isRejected, setIsRejected] = useState(true);
   
   const [formData, setFormData] = useState<FormData>({
     title: '',
@@ -112,6 +114,14 @@ const List: React.FC = () => {
   const filteredApplications = applications
     .filter(app => Boolean(app.archivedAt) === showArchived)
     .filter(app => {
+      if (showArchived) return true;
+
+      const isAppApplied = !!app.appliedAt;
+      const isAppRejected = !!app.rejectedAt;
+      
+      return !(!isApplied && isAppApplied) && !(!isRejected && isAppRejected)
+    })
+    .filter(app => {
       if (!searchTerm) return true;
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -130,10 +140,14 @@ const List: React.FC = () => {
         <Header
           showArchived={showArchived}
           searchTerm={searchTerm}
+          isApplied={isApplied}
+          isRejected={isRejected}
           onSearchChange={setSearchTerm}
           onArchiveToggle={() => setShowArchived(!showArchived)}
           onExport={exportApplications}
           onAddNew={() => setIsModalOpen(true)}
+          onToggleApplied={() => setIsApplied(!isApplied)}
+          onToggleRejected={() => setIsRejected(!isRejected)}
         />
 
         <div className="space-y-4">

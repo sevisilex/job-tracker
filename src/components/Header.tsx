@@ -4,19 +4,27 @@ import { Plus, RotateCcw, Archive, Download, Search } from 'lucide-react';
 interface HeaderProps {
   showArchived: boolean;
   searchTerm: string;
+  isApplied: boolean;
+  isRejected: boolean;
   onSearchChange: (value: string) => void;
   onArchiveToggle: () => void;
   onExport: () => void;
   onAddNew: () => void;
+  onToggleApplied: () => void;
+  onToggleRejected: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
   showArchived,
   searchTerm,
+  isApplied,
+  isRejected,
   onSearchChange,
   onArchiveToggle,
   onExport,
-  onAddNew
+  onAddNew,
+  onToggleApplied,
+  onToggleRejected
 }) => {
   return (
     <>
@@ -45,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({
         {!showArchived && (
           <button
             onClick={onAddNew}
-            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2"
+            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 font-mono"
           >
             <Plus size={20} />
             Dodaj
@@ -53,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      <div className="mb-4">
+      <div className="mb-6">
         <div className="relative">
           <input
             type="text"
@@ -65,6 +73,29 @@ const Header: React.FC<HeaderProps> = ({
           <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
         </div>
       </div>
+
+      {!showArchived && (
+        <div className="flex gap-4 mb-4">
+          <label className="flex items-center gap-2 font-mono">
+            <input
+              type="checkbox"
+              checked={isApplied}
+              onChange={onToggleApplied}
+              className="form-checkbox h-4 w-4 text-blue-500"
+            />
+            Aplikowane
+          </label>
+          <label className="flex items-center gap-2 font-mono">
+            <input
+              type="checkbox"
+              checked={isRejected}
+              onChange={onToggleRejected}
+              className="form-checkbox h-4 w-4 text-blue-500"
+            />
+            Odrzucone
+          </label>
+        </div>
+      )}
     </>
   );
 };
