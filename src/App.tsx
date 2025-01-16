@@ -18,7 +18,7 @@ type FormData = Omit<JobApplication, 'id' | 'createdAt' | 'appliedAt' | 'rejecte
 
 const initDB = async (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('JobApplicationsDB', 3);
+    const request = indexedDB.open('sv_job-tracker', 3);
     request.onerror = () => reject(request.error);
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
@@ -221,6 +221,13 @@ const App: React.FC = () => {
         app.url.toLowerCase().includes(searchLower) ||
         app.tags.some(tag => tag.toLowerCase().includes(searchLower))
       );
+    })
+    .sort((a, b) => {
+      // if (a.rejectAt === null && b.rejectAt !== null) return -1;
+      // if (a.rejectAt !== null && b.rejectAt === null) return 1;
+      // if (a.appliedAt === null && b.appliedAt !== null) return -1;
+      // if (a.appliedAt !== null && b.appliedAt === null) return 1;      
+      return +new Date(b.createdAt) - +new Date(a.createdAt);
     });
 
   return (
