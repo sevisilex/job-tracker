@@ -1,0 +1,6 @@
+{
+  "allowedExtensions": [".vue", ".js", ".ts", ".tsx", ".jsx", ".mjs", ".css", ".scss", ".html", ".json", ".txt", ".md", ".http"],
+  "excludedFiles": ["package-lock.json", "yarn.lock", "demo.json"],
+  "excludedDirs": ["node_modules", "dist", "build", "workspace", ".git", ".vscode", ".nuxt", ".next", ".output", "docs"],
+  "allowedCommands": ["ls", "cat", "echo", "pwd", "mkdir", "ps", "kill", "rm", "mv", "cp", "touch", "chmod", "chown", "ln", "tail", "date", "npx"]
+}
