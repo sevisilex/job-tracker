@@ -8,6 +8,7 @@ export interface JobApplication {
   createdAt: string;
   appliedAt: string | null;
   rejectedAt: string | null;
+  rejectedReason: string | null;
   archivedAt: string | null;
 }
 

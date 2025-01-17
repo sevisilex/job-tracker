@@ -38,7 +38,7 @@ export const saveApplication = async (application: JobApplication): Promise<void
     const transaction = db.transaction(['applications'], 'readwrite');
     const store = transaction.objectStore('applications');
     
-    const request = application.id ? store.put(application) : store.add(application);
+    application.id ? store.put(application) : store.add(application);
     
     transaction.oncomplete = () => resolve();
     transaction.onerror = () => reject(transaction.error);
@@ -69,7 +69,7 @@ export const deleteApplication = async (id: number): Promise<void> => {
     const transaction = db.transaction(['applications'], 'readwrite');
     const store = transaction.objectStore('applications');
     
-    const request = store.delete(id);
+    store.delete(id);
     
     transaction.oncomplete = () => resolve();
     transaction.onerror = () => reject(transaction.error);

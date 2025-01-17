@@ -94,6 +94,18 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
             />
           </div>
 
+          {currentApplication?.rejectedAt &&
+            <div>
+              <label className="font-mono block mb-2">Powód odrzucenia</label>
+              <input
+                type="text"
+                value={formData.rejectedReason || ''}
+                onChange={(e) => onFormDataChange({ ...formData, rejectedReason: e.target.value })}
+                className="w-full p-2 border rounded font-mono"
+              />
+            </div>
+          }
+
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-mono"

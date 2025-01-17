@@ -57,7 +57,7 @@ const JobCard: React.FC<JobCardProps> = ({
           )}
           {app.rejectedAt && (
             <p className="font-mono text-sm text-red-500">
-              Odrzucono: {new Date(app.rejectedAt).toLocaleDateString()}
+              Odrzucono: {new Date(app.rejectedAt).toLocaleDateString()}{app.rejectedReason && ` - ${app.rejectedReason}`}
             </p>
           )}
           {app.archivedAt && (

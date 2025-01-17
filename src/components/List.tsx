@@ -13,13 +13,14 @@ const List: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isApplied, setIsApplied] = useState(true);
   const [isRejected, setIsRejected] = useState(true);
-  
+
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
     location: '',
     tags: [],
     url: '',
+    rejectedReason: '',
   });
 
   const loadApplications = async () => {
@@ -33,7 +34,7 @@ const List: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const application: JobApplication = {
       ...formData,
       createdAt: currentApplication?.createdAt || new Date().toISOString(),
@@ -42,9 +43,9 @@ const List: React.FC = () => {
       archivedAt: currentApplication?.archivedAt || null,
       ...(currentApplication?.id ? { id: currentApplication.id } : {})
     };
-    
+
     await saveApplication(application);
-    
+
     setIsModalOpen(false);
     setCurrentApplication(null);
     setFormData({
@@ -53,6 +54,7 @@ const List: React.FC = () => {
       location: '',
       tags: [],
       url: '',
+      rejectedReason: '',
     });
     await loadApplications();
   };
@@ -60,7 +62,7 @@ const List: React.FC = () => {
   const handleApplyToggle = async (app: JobApplication) => {
     if (!app.id) return;
 
-    const message = app.appliedAt 
+    const message = app.appliedAt
       ? 'Czy na pewno chcesz cofnąć status aplikacji? Data aplikacji zostanie usunięta.'
       : 'Czy chcesz oznaczyć aplikację jako wysłaną? Zostanie ustawiona dzisiejsza data.';
 
@@ -75,15 +77,26 @@ const List: React.FC = () => {
   const handleRejectToggle = async (app: JobApplication) => {
     if (!app.id) return;
 
-    const message = app.rejectedAt
-      ? 'Czy na pewno chcesz cofnąć status odrzucenia? Data odrzucenia zostanie usunięta.'
-      : 'Czy chcesz oznaczyć aplikację jako odrzuconą? Zostanie ustawiona dzisiejsza data.';
+    if (!app.rejectedAt && !app.rejectedReason) {
+      const reason = window.prompt('Czy chcesz oznaczyć aplikację jako odrzuconą? Podaj powodu i zostanie ustawiona dzisiejsza data. Bez powodu to wpsiz "."')
+      if (reason) {
+        await updateApplicationStatus(app.id, {
+          rejectedAt: new Date().toISOString(),
+          ...(reason === '.' ? {} : { rejectedAt: reason })
+        });
+        await loadApplications();
+      }
+    } else {
+      const message = app.rejectedAt
+        ? 'Czy na pewno chcesz cofnąć status odrzucenia? Data odrzucenia zostanie usunięta.'
+        : 'Czy chcesz oznaczyć aplikację jako odrzuconą? Zostanie ustawiona dzisiejsza data.';
 
-    if (window.confirm(message)) {
-      await updateApplicationStatus(app.id, {
-        rejectedAt: app.rejectedAt ? null : new Date().toISOString()
-      });
-      await loadApplications();
+      if (window.confirm(message)) {
+        await updateApplicationStatus(app.id, {
+          rejectedAt: app.rejectedAt ? null : new Date().toISOString()
+        });
+        await loadApplications();
+      }
     }
   };
 
@@ -118,7 +131,7 @@ const List: React.FC = () => {
 
       const isAppApplied = !!app.appliedAt;
       const isAppRejected = !!app.rejectedAt;
-      
+
       return !(!isApplied && isAppApplied) && !(!isRejected && isAppRejected)
     })
     .filter(app => {
@@ -182,6 +195,7 @@ const List: React.FC = () => {
               location: '',
               tags: [],
               url: '',
+              rejectedReason: '',
             });
           }}
           onSubmit={handleSubmit}
