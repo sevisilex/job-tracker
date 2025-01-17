@@ -26,6 +26,22 @@ const Header: React.FC<HeaderProps> = ({
   onToggleApplied,
   onToggleRejected
 }) => {
+
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <>
       <div className="flex justify-between items-center mb-8">
@@ -64,6 +80,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="mb-6">
         <div className="relative">
           <input
+            ref={searchInputRef}
             type="text"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}

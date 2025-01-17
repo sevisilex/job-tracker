@@ -19,7 +19,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
   onSubmit,
   onFormDataChange,
 }) => {
-  const predefinedTags = ['agency', 'linkedin', 'xing', 'myability', 'disabled', 'email', 'remote', 'hybrid', 'typescript', 'vue', 'react', 'angular', 'node', 'aws', 'nuxt', 'next', 'java', 'c#', 'c++', 'mongodb', 'prisma', 'docker', 'php', 'laravel', 'mysql'].sort();
+  const predefinedTags = ['agency', 'linkedin', 'xing', 'myability', 'stepstone', 'disabled', 'email', 'remote', 'hybrid', 'typescript', 'vue', 'react', 'angular', 'node', 'aws', 'nuxt', 'next', 'java', 'c#', 'c++', 'mongodb', 'prisma', 'docker', 'php', 'laravel', 'mysql'].sort();
 
   const addTag = (newTag: string) => {
     if (!formData.tags.includes(newTag)) {
