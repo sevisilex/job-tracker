@@ -4,6 +4,8 @@ import { getAllApplications, saveApplication, updateApplicationStatus, deleteApp
 import Header from './Header';
 import JobCard from './JobCard';
 import ApplicationModal from './ApplicationModal';
+import ConfirmModal from './ConfirmModal';
+import PromptModal from './PromptModal';
 
 const List: React.FC = () => {
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -59,6 +61,54 @@ const List: React.FC = () => {
     await loadApplications();
   };
 
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: () => Promise<void>;
+  }>({
+    isOpen: false,
+    message: '',
+    onConfirm: async () => {},
+  });
+
+  const [promptModal, setPromptModal] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: (value: string) => void;
+  }>({
+    isOpen: false,
+    message: '',
+    onConfirm: () => { },
+  });
+
+  // Helper function for confirmation
+  const showConfirmation = async (message: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      setConfirmModal({
+        isOpen: true,
+        message,
+        onConfirm: async () => {
+          resolve(true);
+          setConfirmModal(prev => ({ ...prev, isOpen: false }));
+        },
+      });
+    });
+  };
+
+  const showPrompt = async (message: string): Promise<string | null> => {
+    return new Promise((resolve) => {
+      setPromptModal({
+        isOpen: true,
+        message,
+        onConfirm: (value: string) => {
+          resolve(value);
+          setPromptModal(prev => ({ ...prev, isOpen: false }));
+        },
+      });
+    });
+  };
+
+  // Update handleApplyToggle
   const handleApplyToggle = async (app: JobApplication) => {
     if (!app.id) return;
 
@@ -66,7 +116,8 @@ const List: React.FC = () => {
       ? 'Czy na pewno chcesz cofnąć status aplikacji? Data aplikacji zostanie usunięta.'
       : 'Czy chcesz oznaczyć aplikację jako wysłaną? Zostanie ustawiona dzisiejsza data.';
 
-    if (window.confirm(message)) {
+    const confirmed = await showConfirmation(message);
+    if (confirmed) {
       await updateApplicationStatus(app.id, {
         appliedAt: app.appliedAt ? null : new Date().toISOString()
       });
@@ -74,15 +125,16 @@ const List: React.FC = () => {
     }
   };
 
+  // Update handleRejectToggle
   const handleRejectToggle = async (app: JobApplication) => {
     if (!app.id) return;
 
     if (!app.rejectedAt && !app.rejectedReason) {
-      const reason = window.prompt('Czy chcesz oznaczyć aplikację jako odrzuconą? Podaj powodu i zostanie ustawiona dzisiejsza data. Bez powodu to wpsiz "."')
+      const reason = await showPrompt('Czy chcesz oznaczyć aplikację jako odrzuconą? Podaj powód i zostanie ustawiona dzisiejsza data. Bez powodu to wpisz "."');
       if (reason) {
         await updateApplicationStatus(app.id, {
           rejectedAt: new Date().toISOString(),
-          ...(reason === '.' ? {} : { rejectedAt: reason })
+          ...(reason === '.' ? {} : { rejectedReason: reason })
         });
         await loadApplications();
       }
@@ -91,7 +143,8 @@ const List: React.FC = () => {
         ? 'Czy na pewno chcesz cofnąć status odrzucenia? Data odrzucenia zostanie usunięta.'
         : 'Czy chcesz oznaczyć aplikację jako odrzuconą? Zostanie ustawiona dzisiejsza data.';
 
-      if (window.confirm(message)) {
+      const confirmed = await showConfirmation(message);
+      if (confirmed) {
         await updateApplicationStatus(app.id, {
           rejectedAt: app.rejectedAt ? null : new Date().toISOString()
         });
@@ -100,6 +153,7 @@ const List: React.FC = () => {
     }
   };
 
+  // Update handleArchiveToggle
   const handleArchiveToggle = async (app: JobApplication) => {
     if (!app.id) return;
 
@@ -107,7 +161,8 @@ const List: React.FC = () => {
       ? 'Czy chcesz przywrócić tę aplikację z archiwum?'
       : 'Czy chcesz przenieść tę aplikację do archiwum?';
 
-    if (window.confirm(message)) {
+    const confirmed = await showConfirmation(message);
+    if (confirmed) {
       await updateApplicationStatus(app.id, {
         archivedAt: app.archivedAt ? null : new Date().toISOString()
       });
@@ -115,13 +170,15 @@ const List: React.FC = () => {
     }
   };
 
+  // Update handleDelete
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Czy na pewno chcesz trwale usunąć tę aplikację? Tej operacji nie można cofnąć.')) {
-      return;
+    const confirmed = await showConfirmation(
+      'Czy na pewno chcesz trwale usunąć tę aplikację? Tej operacji nie można cofnąć.'
+    );
+    if (confirmed) {
+      await deleteApplication(id);
+      await loadApplications();
     }
-
-    await deleteApplication(id);
-    await loadApplications();
   };
 
   const filteredApplications = applications
@@ -202,6 +259,20 @@ const List: React.FC = () => {
           onFormDataChange={setFormData}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        message={confirmModal.message}
+        onConfirm={confirmModal.onConfirm}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+      />
+
+      <PromptModal
+        isOpen={promptModal.isOpen}
+        message={promptModal.message}
+        onConfirm={promptModal.onConfirm}
+        onClose={() => setPromptModal(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };
