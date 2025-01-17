@@ -74,7 +74,13 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
             <input
               type="text"
               value={formData.location}
-              onChange={(e) => onFormDataChange({ ...formData, location: e.target.value })}
+              onChange={(e) => {
+                const cursorPosition = e.target.selectionStart;
+                onFormDataChange({ ...formData, location: e.target.value.toLowerCase() });
+                setTimeout(() => {
+                  e.target.setSelectionRange(cursorPosition, cursorPosition);
+                }, 0);
+              }}
               className="w-full p-2 border rounded font-mono"
             />
           </div>
@@ -86,10 +92,16 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
             <input
               type="text"
               value={tagsArrayToString(formData.tags)}
-              onChange={(e) => onFormDataChange({
-                ...formData,
-                tags: tagsStringToArray(e.target.value)
-              })}
+              onChange={(e) => {
+                const cursorPosition = e.target.selectionStart;
+                onFormDataChange({
+                  ...formData,
+                  tags: tagsStringToArray(e.target.value)
+                });
+                setTimeout(() => {
+                  e.target.setSelectionRange(cursorPosition, cursorPosition);
+                }, 0);
+              }}
               className="w-full p-2 border rounded font-mono"
               placeholder="homeoffice, warsaw, java"
             />

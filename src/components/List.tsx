@@ -189,7 +189,11 @@ const List: React.FC = () => {
       const isAppApplied = !!app.appliedAt;
       const isAppRejected = !!app.rejectedAt;
 
-      return !(!isApplied && isAppApplied) && !(!isRejected && isAppRejected)
+      if (!isAppApplied && !isAppRejected) return true
+      if (isApplied && isAppApplied) return true
+      if (isRejected && isAppRejected) return true
+      return false
+
     })
     .filter(app => {
       if (!searchTerm) return true;
