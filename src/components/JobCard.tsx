@@ -1,6 +1,7 @@
 import React from 'react';
 import { Edit2, CheckCircle, XCircle, Archive, RotateCcw, Trash2 } from 'lucide-react';
 import { JobApplication } from '../types';
+import { formatDate } from '../utils/dateFormatter';
 
 interface JobCardProps {
   application: JobApplication;
@@ -48,21 +49,21 @@ const JobCard: React.FC<JobCardProps> = ({
             ))}
           </div>
           <p className="font-mono text-sm text-gray-500 mt-2">
-            Utworzono: {new Date(app.createdAt).toLocaleDateString()}
+            Utworzono: {formatDate(app.createdAt)}
           </p>
           {app.appliedAt && (
             <p className="font-mono text-sm text-green-500">
-              Aplikowano: {new Date(app.appliedAt).toLocaleDateString()}
+              Aplikowano: {formatDate(app.appliedAt)}
             </p>
           )}
           {app.rejectedAt && (
             <p className="font-mono text-sm text-red-500">
-              Odrzucono: {new Date(app.rejectedAt).toLocaleDateString()}{app.rejectedReason && ` - ${app.rejectedReason}`}
+              Odrzucono: {formatDate(app.rejectedAt)}{app.rejectedReason && ` - ${app.rejectedReason}`}
             </p>
           )}
           {app.archivedAt && (
             <p className="font-mono text-sm text-yellow-600">
-              Zarchiwizowano: {new Date(app.archivedAt).toLocaleDateString()}
+              Zarchiwizowano: {formatDate(app.archivedAt)}
             </p>
           )}
         </div>
