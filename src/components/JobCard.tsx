@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, CheckCircle, XCircle, Archive, RotateCcw, Trash2 } from 'lucide-react';
+import { Edit2, CheckCircle, XCircle, Archive, RotateCcw, Trash2, ExternalLink } from 'lucide-react';
 import { JobApplication } from '../types';
 import { formatDate } from '../utils/dateFormatter';
 
@@ -29,9 +29,7 @@ const JobCard: React.FC<JobCardProps> = ({
   onDelete
 }) => {
   return (
-    <div
-      className={`bg-white p-4 rounded shadow-sm border-l-4 ${getBorderColor(app)}`}
-    >
+    <div className={`bg-white p-4 rounded shadow-sm border-l-4 ${getBorderColor(app)}`}>
       <div className="flex justify-between items-start">
         <div>
           <h3 className="font-mono text-xl font-semibold">{app.title}</h3>
@@ -67,40 +65,70 @@ const JobCard: React.FC<JobCardProps> = ({
             </p>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           {!showArchived && (
             <>
-              <button
-                onClick={() => onEdit(app)}
-                className="p-2 text-gray-600 hover:text-blue-500"
-                title="Edytuj"
-              >
-                <Edit2 size={20} />
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onEdit(app)}
+                  className="p-2 text-gray-600 hover:text-blue-500"
+                  title="Edytuj"
+                >
+                  <Edit2 size={20} />
+                </button>
 
-              <button
-                onClick={() => onApplyToggle(app)}
-                className={`p-2 ${app.appliedAt ? 'text-green-500' : 'text-gray-600'} hover:text-green-700`}
-                title={app.appliedAt ? 'Cofnij aplikację' : 'Oznacz jako aplikowane'}
-              >
-                <CheckCircle size={20} />
-              </button>
+                <button
+                  onClick={() => onApplyToggle(app)}
+                  className={`p-2 ${app.appliedAt ? 'text-green-500' : 'text-gray-600'} hover:text-green-700`}
+                  title={app.appliedAt ? 'Cofnij aplikację' : 'Oznacz jako aplikowane'}
+                >
+                  <CheckCircle size={20} />
+                </button>
 
-              <button
-                onClick={() => onRejectToggle(app)}
-                className={`p-2 ${app.rejectedAt ? 'text-red-500' : 'text-gray-600'} hover:text-red-700`}
-                title={app.rejectedAt ? 'Cofnij odrzucenie' : 'Oznacz jako odrzucone'}
-              >
-                <XCircle size={20} />
-              </button>
+                <button
+                  onClick={() => onRejectToggle(app)}
+                  className={`p-2 ${app.rejectedAt ? 'text-red-500' : 'text-gray-600'} hover:text-red-700`}
+                  title={app.rejectedAt ? 'Cofnij odrzucenie' : 'Oznacz jako odrzucone'}
+                >
+                  <XCircle size={20} />
+                </button>
 
-              <button
-                onClick={() => onArchiveToggle(app)}
-                className="p-2 text-gray-600 hover:text-yellow-600"
-                title="Archiwizuj"
-              >
-                <Archive size={20} />
-              </button>
+                <button
+                  onClick={() => onArchiveToggle(app)}
+                  className="p-2 text-gray-600 hover:text-yellow-600"
+                  title="Archiwizuj"
+                >
+                  <Archive size={20} />
+                </button>
+              </div>
+
+              {app.url && (
+                <div className="flex gap-2 justify-end">
+                  <a
+                    href={app.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 text-blue-600 hover:text-blue-500"
+                    title={app.url}
+                  >
+                    <ExternalLink size={20} />
+                  </a>
+                </div>
+              )}
+
+              {app.url2 && (
+                <div className="flex gap-2 justify-end">
+                  <a
+                    href={app.url2}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 text-blue-600 hover:text-blue-500"
+                    title={app.url2}
+                  >
+                    <ExternalLink size={20} />
+                  </a>
+                </div>
+              )}
             </>
           )}
 
