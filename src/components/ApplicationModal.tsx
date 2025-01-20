@@ -19,7 +19,10 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
   onSubmit,
   onFormDataChange,
 }) => {
-  const predefinedTags = ['agency', 'linkedin', 'xing', 'myability', 'stepstone', 'disabled', 'email', 'remote', 'hybrid', 'typescript', 'vue', 'react', 'angular', 'node', 'aws', 'nuxt', 'next', 'java', 'c#', 'c++', 'mongodb', 'prisma', 'docker', 'php', 'laravel', 'mysql'].sort();
+  const predefinedTags = [
+    ['typescript', 'vue', 'react', 'angular', 'node', 'aws', 'nuxt', 'next', 'java', 'c#', 'c++', 'mongodb', 'prisma', 'docker', 'php', 'laravel', 'mysql'].sort(),
+    ['agency', 'remote', 'hybrid', 'email', 'linkedin', 'xing', 'myability', 'stepstone', 'disabled'],
+  ];
 
   const addTag = (newTag: string) => {
     if (!formData.tags.includes(newTag)) {
@@ -105,19 +108,23 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               className="w-full p-2 border rounded font-mono"
               placeholder="homeoffice, warsaw, java"
             />
-            <div className="mt-2 flex flex-wrap gap-2">
-              {predefinedTags
-                .filter(tag => !formData.tags.includes(tag))
-                .map((tag, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => addTag(tag)}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-mono text-xs py-1 px-3 rounded-full"
-                  >
-                    {tag}
-                  </button>
-                ))}
+            <div className="mt-2 space-y-2">
+              {predefinedTags.map((tagGroup, groupIndex) => (
+                <div key={groupIndex} className="flex flex-wrap gap-2">
+                  {tagGroup
+                    .filter(tag => !formData.tags.includes(tag))
+                    .map((tag, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => addTag(tag)}
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-mono text-xs py-1 px-3 rounded-full"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                </div>
+              ))}
             </div>
           </div>
 
