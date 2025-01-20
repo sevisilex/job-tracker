@@ -21,7 +21,8 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
 }) => {
   const predefinedTags = [
     ['typescript', 'vue', 'react', 'angular', 'node', 'aws', 'nuxt', 'next', 'java', 'c#', 'c++', 'mongodb', 'prisma', 'docker', 'php', 'laravel', 'mysql'].sort(),
-    ['agency', 'remote', 'hybrid', 'email', 'linkedin', 'xing', 'myability', 'stepstone', 'disabled'],
+    ['agency', 'remote', 'hybrid', 'email', 'disabled'],
+    ['linkedin', 'xing', 'myability', 'stepstone', 'join'],
   ];
 
   const addTag = (newTag: string) => {
