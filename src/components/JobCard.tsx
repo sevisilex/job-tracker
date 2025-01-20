@@ -37,7 +37,7 @@ const JobCard: React.FC<JobCardProps> = ({
             {app.location}
           </p>
           <div className="flex flex-wrap gap-2 mt-2">
-            {app.tags.map((tag, index) => (
+            {app.tags.sort().map((tag, index) => (
               <span
                 key={index}
                 className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-mono text-gray-700"

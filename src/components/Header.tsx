@@ -51,13 +51,16 @@ const Header: React.FC<HeaderProps> = ({
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
+        if (document.activeElement !== searchInputRef.current) {
+          e.preventDefault();
+          searchInputRef.current?.focus();
+        }
       }
     };
-
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   return (
