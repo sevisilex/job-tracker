@@ -136,6 +136,12 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               onChange={(e) => onFormDataChange({ ...formData, url: e.target.value })}
               className="w-full p-2 border rounded font-mono"
             />
+            <input
+              type="url"
+              value={formData.url2 || ''}
+              onChange={(e) => onFormDataChange({ ...formData, url2: e.target.value || null })}
+              className="w-full p-2 border rounded font-mono"
+            />
           </div>
 
           {currentApplication?.rejectedAt &&

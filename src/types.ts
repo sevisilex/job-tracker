@@ -5,6 +5,7 @@ export interface JobApplication {
   location: string;
   tags: string[];
   url: string;
+  url2: string | null;
   appliedAt: string | null;
   rejectedAt: string | null;
   rejectedReason: string | null;

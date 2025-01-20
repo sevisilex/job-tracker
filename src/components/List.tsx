@@ -22,6 +22,7 @@ const List: React.FC = () => {
     location: '',
     tags: [],
     url: '',
+    url2: null,
     rejectedReason: '',
   });
 
@@ -55,6 +56,7 @@ const List: React.FC = () => {
       location: '',
       tags: [],
       url: '',
+      url2: null,
       rejectedReason: '',
     });
     await loadApplications();
@@ -256,6 +258,7 @@ const List: React.FC = () => {
               location: '',
               tags: [],
               url: '',
+              url2: null,
               rejectedReason: '',
             });
           }}
