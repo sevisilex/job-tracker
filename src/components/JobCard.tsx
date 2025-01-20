@@ -10,7 +10,7 @@ interface JobCardProps {
   onApplyToggle: (app: JobApplication) => void;
   onRejectToggle: (app: JobApplication) => void;
   onArchiveToggle: (app: JobApplication) => void;
-  onDelete: (id: number) => void;
+  onDelete: (createdAt: string) => void;
 }
 
 const getBorderColor = (app: JobApplication): string => {
@@ -40,8 +40,8 @@ const JobCard: React.FC<JobCardProps> = ({
           </p>
           <div className="flex flex-wrap gap-2 mt-2">
             {app.tags.map((tag, index) => (
-              <span 
-                key={index} 
+              <span
+                key={index}
                 className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-mono text-gray-700"
               >
                 {tag}
@@ -115,7 +115,7 @@ const JobCard: React.FC<JobCardProps> = ({
               </button>
 
               <button
-                onClick={() => app.id && onDelete(app.id)}
+                onClick={() => onDelete(app.createdAt)}
                 className="p-2 text-gray-600 hover:text-red-500"
                 title="Usuń trwale"
               >

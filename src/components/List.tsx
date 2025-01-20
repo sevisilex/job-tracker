@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { JobApplication, FormData } from '../types';
-import { getAllApplications, saveApplication, updateApplicationStatus, deleteApplication, exportApplications } from '../lib/db';
+import { getAllApplications, saveApplication, updateApplicationStatus, deleteApplication } from '../lib/db';
 import Header from './Header';
 import JobCard from './JobCard';
 import ApplicationModal from './ApplicationModal';
@@ -43,7 +43,6 @@ const List: React.FC = () => {
       appliedAt: currentApplication?.appliedAt || null,
       rejectedAt: currentApplication?.rejectedAt || null,
       archivedAt: currentApplication?.archivedAt || null,
-      ...(currentApplication?.id ? { id: currentApplication.id } : {})
     };
 
     await saveApplication(application);
@@ -68,7 +67,7 @@ const List: React.FC = () => {
   }>({
     isOpen: false,
     message: '',
-    onConfirm: async () => {},
+    onConfirm: async () => { },
   });
 
   const [promptModal, setPromptModal] = useState<{
@@ -110,7 +109,7 @@ const List: React.FC = () => {
 
   // Update handleApplyToggle
   const handleApplyToggle = async (app: JobApplication) => {
-    if (!app.id) return;
+    if (!app.createdAt) return;
 
     const message = app.appliedAt
       ? 'Czy na pewno chcesz cofnąć status aplikacji? Data aplikacji zostanie usunięta.'
@@ -118,7 +117,7 @@ const List: React.FC = () => {
 
     const confirmed = await showConfirmation(message);
     if (confirmed) {
-      await updateApplicationStatus(app.id, {
+      await updateApplicationStatus(app.createdAt, {
         appliedAt: app.appliedAt ? null : new Date().toISOString()
       });
       await loadApplications();
@@ -127,12 +126,12 @@ const List: React.FC = () => {
 
   // Update handleRejectToggle
   const handleRejectToggle = async (app: JobApplication) => {
-    if (!app.id) return;
+    if (!app.createdAt) return;
 
     if (!app.rejectedAt && !app.rejectedReason) {
       const reason = await showPrompt('Czy chcesz oznaczyć aplikację jako odrzuconą? Podaj powód i zostanie ustawiona dzisiejsza data. Bez powodu to wpisz "."');
       if (reason) {
-        await updateApplicationStatus(app.id, {
+        await updateApplicationStatus(app.createdAt, {
           rejectedAt: new Date().toISOString(),
           ...(reason === '.' ? {} : { rejectedReason: reason })
         });
@@ -145,7 +144,7 @@ const List: React.FC = () => {
 
       const confirmed = await showConfirmation(message);
       if (confirmed) {
-        await updateApplicationStatus(app.id, {
+        await updateApplicationStatus(app.createdAt, {
           rejectedAt: app.rejectedAt ? null : new Date().toISOString()
         });
         await loadApplications();
@@ -155,7 +154,7 @@ const List: React.FC = () => {
 
   // Update handleArchiveToggle
   const handleArchiveToggle = async (app: JobApplication) => {
-    if (!app.id) return;
+    if (!app.createdAt) return;
 
     const message = app.archivedAt
       ? 'Czy chcesz przywrócić tę aplikację z archiwum?'
@@ -163,7 +162,7 @@ const List: React.FC = () => {
 
     const confirmed = await showConfirmation(message);
     if (confirmed) {
-      await updateApplicationStatus(app.id, {
+      await updateApplicationStatus(app.createdAt, {
         archivedAt: app.archivedAt ? null : new Date().toISOString()
       });
       await loadApplications();
@@ -171,15 +170,17 @@ const List: React.FC = () => {
   };
 
   // Update handleDelete
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (createdAt: string) => {
     const confirmed = await showConfirmation(
       'Czy na pewno chcesz trwale usunąć tę aplikację? Tej operacji nie można cofnąć.'
     );
     if (confirmed) {
-      await deleteApplication(id);
+      await deleteApplication(createdAt);
       await loadApplications();
     }
   };
+
+
 
   const filteredApplications = applications
     .filter(app => Boolean(app.archivedAt) === showArchived)
@@ -218,7 +219,6 @@ const List: React.FC = () => {
           isRejected={isRejected}
           onSearchChange={setSearchTerm}
           onArchiveToggle={() => setShowArchived(!showArchived)}
-          onExport={exportApplications}
           onAddNew={() => setIsModalOpen(true)}
           onToggleApplied={() => setIsApplied(!isApplied)}
           onToggleRejected={() => setIsRejected(!isRejected)}
@@ -227,7 +227,7 @@ const List: React.FC = () => {
         <div className="space-y-4">
           {filteredApplications.map((app) => (
             <JobCard
-              key={app.id}
+              key={app.createdAt}
               application={app}
               showArchived={showArchived}
               onEdit={(app) => {

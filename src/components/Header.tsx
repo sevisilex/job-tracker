@@ -1,5 +1,6 @@
 import React from 'react';
-import { Plus, RotateCcw, Archive, Download, Search } from 'lucide-react';
+import { Plus, RotateCcw, Archive, Download, Search, Upload } from 'lucide-react';
+import { exportApplications, importApplications } from '@/lib/db';
 
 interface HeaderProps {
   showArchived: boolean;
@@ -8,7 +9,6 @@ interface HeaderProps {
   isRejected: boolean;
   onSearchChange: (value: string) => void;
   onArchiveToggle: () => void;
-  onExport: () => void;
   onAddNew: () => void;
   onToggleApplied: () => void;
   onToggleRejected: () => void;
@@ -21,14 +21,32 @@ const Header: React.FC<HeaderProps> = ({
   isRejected,
   onSearchChange,
   onArchiveToggle,
-  onExport,
   onAddNew,
   onToggleApplied,
   onToggleRejected
 }) => {
 
   const searchInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const result = await importApplications(file);
+      alert(`Zaimportowano ${result.imported} aplikacji, pominięto ${result.skipped} aplikacji.`);
+      window.location.reload(); // Odśwież stronę aby pokazać zaimportowane dane
+    } catch (error) {
+      alert('Błąd podczas importowania: ' + (error as Error).message);
+    }
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -58,11 +76,26 @@ const Header: React.FC<HeaderProps> = ({
               {showArchived ? 'Powrót do aktywnych' : 'Pokaż zarchiwizowane'}
             </button>
             <button
-              onClick={onExport}
+              onClick={exportApplications}
               className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
             >
               <Download size={16} />
               Eksportuj wszystko
+            </button>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleImport}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
+            >
+              <Upload size={16} />
+              Importuj
             </button>
           </div>
         </div>
