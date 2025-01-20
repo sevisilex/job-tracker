@@ -6,6 +6,8 @@ import JobCard from './JobCard';
 import ApplicationModal from './ApplicationModal';
 import ConfirmModal from './ConfirmModal';
 import PromptModal from './PromptModal';
+import Calendar from './Calendar';
+import CalendarModal from './CalendarModal';
 
 const List: React.FC = () => {
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -15,6 +17,7 @@ const List: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isApplied, setIsApplied] = useState(true);
   const [isRejected, setIsRejected] = useState(true);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
     title: '',
@@ -224,6 +227,7 @@ const List: React.FC = () => {
           onAddNew={() => setIsModalOpen(true)}
           onToggleApplied={() => setIsApplied(!isApplied)}
           onToggleRejected={() => setIsRejected(!isRejected)}
+          onShowCalendar={() => setIsCalendarModalOpen(true)}
         />
 
         <div className="space-y-4">
@@ -266,6 +270,12 @@ const List: React.FC = () => {
           onFormDataChange={setFormData}
         />
       </div>
+
+      <CalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+        applications={applications}
+      />
 
       <ConfirmModal
         isOpen={confirmModal.isOpen}

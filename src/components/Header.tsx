@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, RotateCcw, Archive, Download, Search, Upload } from 'lucide-react';
+import { Plus, RotateCcw, Archive, Download, Search, Upload, Calendar as CalendarIcon } from 'lucide-react';
 import { exportApplications, importApplications } from '@/lib/db';
 
 interface HeaderProps {
@@ -12,6 +12,7 @@ interface HeaderProps {
   onAddNew: () => void;
   onToggleApplied: () => void;
   onToggleRejected: () => void;
+  onShowCalendar: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -23,7 +24,8 @@ const Header: React.FC<HeaderProps> = ({
   onArchiveToggle,
   onAddNew,
   onToggleApplied,
-  onToggleRejected
+  onToggleRejected,
+  onShowCalendar
 }) => {
 
   const searchInputRef = React.useRef<HTMLInputElement>(null);
@@ -78,6 +80,18 @@ const Header: React.FC<HeaderProps> = ({
               {showArchived ? <RotateCcw size={16} /> : <Archive size={16} />}
               {showArchived ? 'Powrót do aktywnych' : 'Pokaż zarchiwizowane'}
             </button>
+
+            
+
+            <button
+              onClick={onShowCalendar}
+              className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
+            >
+              <CalendarIcon size={20} className="mr-2" />
+              Kalendarz
+            </button>
+
+            
             <button
               onClick={exportApplications}
               className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
