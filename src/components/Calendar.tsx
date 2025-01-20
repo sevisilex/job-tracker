@@ -20,7 +20,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
 
     applications.forEach(app => {
       const date = new Date(app.createdAt);
-      const dateKey = date.toISOString().split('T')[0];
+      const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
       if (!counts.has(dateKey)) {
         counts.set(dateKey, { pending: 0, sent: 0, rejected: 0 });
@@ -48,7 +48,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
 
     for (let d = 1; d <= lastDay.getDate(); d++) {
       const date = new Date(year, month, d);
-      const dateKey = date.toISOString().split('T')[0];
+      const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
       const dayCounts = applicationCounts.get(dateKey) || { pending: 0, sent: 0, rejected: 0 };
       days.push({ date, counts: dayCounts });
     }
