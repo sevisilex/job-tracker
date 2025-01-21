@@ -6,6 +6,7 @@ interface ApplicationModalProps {
   isOpen: boolean;
   currentApplication: JobApplication | null;
   formData: FormData;
+  disabled?: boolean
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
   onFormDataChange: (data: FormData) => void;
@@ -15,6 +16,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
   isOpen,
   currentApplication,
   formData,
+  disabled = false,
   onClose,
   onSubmit,
   onFormDataChange,
@@ -41,7 +43,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
       <div className="bg-white rounded-lg w-4/5 max-h-screen overflow-y-auto p-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-mono font-bold">
-            {currentApplication ? 'Edytuj aplikację' : 'Nowa aplikacja'}
+            {disabled ? 'Zarchiwizowane' : currentApplication ? 'Edytuj aplikację' : 'Nowa aplikacja'}
           </h2>
           <button
             onClick={onClose}
@@ -60,6 +62,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               onChange={(e) => onFormDataChange({ ...formData, title: e.target.value })}
               className="w-full p-2 border rounded font-mono"
               required
+              disabled={disabled}
             />
           </div>
 
@@ -70,6 +73,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               onChange={(e) => onFormDataChange({ ...formData, description: e.target.value })}
               className="w-full p-2 border rounded font-mono h-32"
               maxLength={10000}
+              disabled={disabled}
             />
           </div>
 
@@ -86,13 +90,12 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 }, 0);
               }}
               className="w-full p-2 border rounded font-mono"
+              disabled={disabled}
             />
           </div>
 
           <div>
-            <label className="font-mono block mb-2">
-              Tagi
-            </label>
+            <label className="font-mono block mb-2">Tagi</label>
             <input
               type="text"
               value={tagsArrayToString(formData.tags)}
@@ -108,25 +111,29 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               }}
               className="w-full p-2 border rounded font-mono"
               placeholder="homeoffice, warsaw, java"
+              disabled={disabled}
             />
-            <div className="mt-2 space-y-2">
-              {predefinedTags.map((tagGroup, groupIndex) => (
-                <div key={groupIndex} className="flex flex-wrap gap-2">
-                  {tagGroup
-                    .filter(tag => !formData.tags.includes(tag))
-                    .map((tag, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => addTag(tag)}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-mono text-xs py-1 px-3 rounded-full"
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                </div>
-              ))}
-            </div>
+            {!disabled && (
+              <div className="mt-2 space-y-2">
+                {predefinedTags.map((tagGroup, groupIndex) => (
+                  <div key={groupIndex} className="flex flex-wrap gap-2">
+                    {tagGroup
+                      .filter(tag => !formData.tags.includes(tag))
+                      .map((tag, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => addTag(tag)}
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-mono text-xs py-1 px-3 rounded-full"
+                          disabled={disabled}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
@@ -136,16 +143,18 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               value={formData.url}
               onChange={(e) => onFormDataChange({ ...formData, url: e.target.value })}
               className="w-full p-2 border rounded font-mono"
+              disabled={disabled}
             />
             <input
               type="url"
               value={formData.url2 || ''}
               onChange={(e) => onFormDataChange({ ...formData, url2: e.target.value || null })}
               className="w-full p-2 border rounded font-mono"
+              disabled={disabled}
             />
           </div>
 
-          {currentApplication?.rejectedAt &&
+          {currentApplication?.rejectedAt && (
             <div>
               <label className="font-mono block mb-2">Powód odrzucenia</label>
               <input
@@ -153,16 +162,19 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 value={formData.rejectedReason || ''}
                 onChange={(e) => onFormDataChange({ ...formData, rejectedReason: e.target.value })}
                 className="w-full p-2 border rounded font-mono"
+                disabled={disabled}
               />
             </div>
-          }
+          )}
 
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-mono"
-          >
-            {currentApplication ? 'Zapisz zmiany' : 'Dodaj aplikację'}
-          </button>
+          {!disabled && (
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-mono"
+            >
+              {currentApplication ? 'Zapisz zmiany' : 'Dodaj aplikację'}
+            </button>
+          )}
         </form>
       </div>
     </div>

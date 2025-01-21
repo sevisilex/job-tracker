@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, CheckCircle, XCircle, Archive, RotateCcw, Trash2, ExternalLink } from 'lucide-react';
+import { File, FilePen, CheckCircle, XCircle, Archive, RotateCcw, Trash2, ExternalLink } from 'lucide-react';
 import { JobApplication } from '../types';
 import { formatDate } from '../utils/dateFormatter';
 
@@ -74,7 +74,7 @@ const JobCard: React.FC<JobCardProps> = ({
                   className="p-2 text-gray-600 hover:text-blue-500"
                   title="Edytuj"
                 >
-                  <Edit2 size={20} />
+                  <FilePen size={20} />
                 </button>
 
                 <button
@@ -134,21 +134,58 @@ const JobCard: React.FC<JobCardProps> = ({
 
           {showArchived && (
             <>
-              <button
-                onClick={() => onArchiveToggle(app)}
-                className="p-2 text-gray-600 hover:text-blue-500"
-                title="Przywróć"
-              >
-                <RotateCcw size={20} />
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onEdit(app)}
+                  className="p-2 text-gray-300 hover:text-blue-300"
+                  title="View"
+                >
+                  <File size={20} />
+                </button>
 
-              <button
-                onClick={() => onDelete(app.createdAt)}
-                className="p-2 text-gray-600 hover:text-red-500"
-                title="Usuń trwale"
-              >
-                <Trash2 size={20} />
-              </button>
+                <button
+                  onClick={() => onArchiveToggle(app)}
+                  className="p-2 text-gray-600 hover:text-blue-500"
+                  title="Przywróć"
+                >
+                  <RotateCcw size={20} />
+                </button>
+
+                <button
+                  onClick={() => onDelete(app.createdAt)}
+                  className="p-2 text-gray-600 hover:text-red-500"
+                  title="Usuń trwale"
+                >
+                  <Trash2 size={20} />
+                </button>
+              </div>
+              {app.url && (
+                <div className="flex gap-2 justify-end">
+                  <a
+                    href={app.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 text-blue-600 hover:text-blue-500"
+                    title={app.url}
+                  >
+                    <ExternalLink size={20} />
+                  </a>
+                </div>
+              )}
+
+              {app.url2 && (
+                <div className="flex gap-2 justify-end">
+                  <a
+                    href={app.url2}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 text-blue-600 hover:text-blue-500"
+                    title={app.url2}
+                  >
+                    <ExternalLink size={20} />
+                  </a>
+                </div>
+              )}
             </>
           )}
         </div>

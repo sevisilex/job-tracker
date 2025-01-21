@@ -253,6 +253,7 @@ const List: React.FC = () => {
           isOpen={isModalOpen}
           currentApplication={currentApplication}
           formData={formData}
+          disabled={showArchived}
           onClose={() => {
             setIsModalOpen(false);
             setCurrentApplication(null);
