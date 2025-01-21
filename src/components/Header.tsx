@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, RotateCcw, Archive, Download, Search, Upload, Calendar as CalendarIcon } from 'lucide-react';
+import { Plus, RotateCcw, Archive, Download, Search, Upload, Calendar as CalendarIcon, X } from 'lucide-react';
 import { exportApplications, importApplications } from '@/lib/db';
 
 interface HeaderProps {
@@ -138,6 +138,14 @@ const Header: React.FC<HeaderProps> = ({
             className="w-full p-2 pl-10 border rounded font-mono"
           />
           <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+          {searchTerm && (
+            <button
+              onClick={() => onSearchChange('')}
+              className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+            >
+              <X size={20} />
+            </button>
+          )}
         </div>
       </div>
 
