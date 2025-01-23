@@ -81,8 +81,6 @@ const Header: React.FC<HeaderProps> = ({
               {showArchived ? 'Powrót do aktywnych' : 'Pokaż zarchiwizowane'}
             </button>
 
-            
-
             <button
               onClick={onShowCalendar}
               className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
@@ -91,7 +89,6 @@ const Header: React.FC<HeaderProps> = ({
               Kalendarz
             </button>
 
-            
             <button
               onClick={exportApplications}
               className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"

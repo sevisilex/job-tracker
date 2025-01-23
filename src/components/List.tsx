@@ -6,7 +6,6 @@ import JobCard from './JobCard';
 import ApplicationModal from './ApplicationModal';
 import ConfirmModal from './ConfirmModal';
 import PromptModal from './PromptModal';
-import Calendar from './Calendar';
 import CalendarModal from './CalendarModal';
 
 const List: React.FC = () => {
@@ -195,11 +194,11 @@ const List: React.FC = () => {
       const isAppApplied = !!app.appliedAt;
       const isAppRejected = !!app.rejectedAt;
 
-      if (!isAppApplied && !isAppRejected) return true
-      if (isApplied && isAppApplied) return true
-      if (isRejected && isAppRejected) return true
+      if (isApplied && isRejected) return true
+      else if (isApplied && !isRejected) return isAppApplied && !isAppRejected
+      else if (!isApplied && isRejected) return isAppRejected
+      else if (!isAppApplied && !isAppRejected) return true
       return false
-
     })
     .filter(app => {
       if (!searchTerm) return true;
