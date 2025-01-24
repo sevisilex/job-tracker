@@ -1,58 +1,41 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from 'react'
+import { X } from 'lucide-react'
 
 interface PromptModalProps {
-  isOpen: boolean;
-  message: string;
-  onConfirm: (value: string) => void;
-  onClose: () => void;
+  isOpen: boolean
+  message: string
+  onConfirm: (value: string) => void
+  onClose: () => void
 }
 
-const PromptModal: React.FC<PromptModalProps> = ({
-  isOpen,
-  message,
-  onConfirm,
-  onClose,
-}) => {
-  const [value, setValue] = useState('');
+const PromptModal: React.FC<PromptModalProps> = ({ isOpen, message, onConfirm, onClose }) => {
+  const [value, setValue] = useState('')
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-8 max-w-md w-full">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-mono font-bold">Wprowadź wartość</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={24} />
           </button>
         </div>
 
         <p className="mb-4 font-mono">{message}</p>
 
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          className="w-full p-2 border rounded font-mono mb-6"
-          autoFocus
-        />
+        <input type="text" value={value} onChange={(e) => setValue(e.target.value)} className="w-full p-2 border rounded font-mono mb-6" autoFocus />
 
         <div className="flex justify-end space-x-4">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border rounded font-mono hover:bg-gray-100"
-          >
+          <button onClick={onClose} className="px-4 py-2 border rounded font-mono hover:bg-gray-100">
             Anuluj
           </button>
           <button
             onClick={() => {
-              onConfirm(value);
-              setValue('');
-              onClose();
+              onConfirm(value)
+              setValue('')
+              onClose()
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded font-mono hover:bg-blue-600"
           >
@@ -61,7 +44,7 @@ const PromptModal: React.FC<PromptModalProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PromptModal;
+export default PromptModal

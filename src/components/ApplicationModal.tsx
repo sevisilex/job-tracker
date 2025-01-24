@@ -1,54 +1,59 @@
-import React from 'react';
-import { X } from 'lucide-react';
-import { JobApplication, FormData, tagsStringToArray, tagsArrayToString } from '../types';
+import React from 'react'
+import { X } from 'lucide-react'
+import { JobApplication, FormData, tagsStringToArray, tagsArrayToString } from '../types'
 
 interface ApplicationModalProps {
-  isOpen: boolean;
-  currentApplication: JobApplication | null;
-  formData: FormData;
+  isOpen: boolean
+  currentApplication: JobApplication | null
+  formData: FormData
   disabled?: boolean
-  onClose: () => void;
-  onSubmit: (e: React.FormEvent) => void;
-  onFormDataChange: (data: FormData) => void;
+  onClose: () => void
+  onSubmit: (e: React.FormEvent) => void
+  onFormDataChange: (data: FormData) => void
 }
 
-const ApplicationModal: React.FC<ApplicationModalProps> = ({
-  isOpen,
-  currentApplication,
-  formData,
-  disabled = false,
-  onClose,
-  onSubmit,
-  onFormDataChange,
-}) => {
+const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentApplication, formData, disabled = false, onClose, onSubmit, onFormDataChange }) => {
   const predefinedTags = [
-    ['typescript', 'vue', 'react', 'angular', 'node', 'aws', 'nuxt', 'next', 'java', 'c#', 'c++', 'mongodb', 'prisma', 'docker', 'php', 'laravel', 'mysql'].sort(),
+    [
+      'typescript',
+      'vue',
+      'react',
+      'angular',
+      'node',
+      'aws',
+      'nuxt',
+      'next',
+      'java',
+      'c#',
+      'c++',
+      'mongodb',
+      'prisma',
+      'docker',
+      'php',
+      'laravel',
+      'mysql',
+    ].sort(),
     ['agency', 'remote', 'hybrid', 'email', 'disabled'],
     ['linkedin', 'xing', 'myability', 'stepstone', 'join'],
-  ];
+  ]
 
   const addTag = (newTag: string) => {
     if (!formData.tags.includes(newTag)) {
       onFormDataChange({
         ...formData,
-        tags: [...formData.tags, newTag]
-      });
+        tags: [...formData.tags, newTag],
+      })
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg w-4/5 max-h-screen overflow-y-auto p-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-mono font-bold">
-            {disabled ? 'Zarchiwizowane' : currentApplication ? 'Edytuj aplikację' : 'Nowa aplikacja'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <h2 className="text-2xl font-mono font-bold">{disabled ? 'Zarchiwizowane' : currentApplication ? 'Edytuj aplikację' : 'Nowa aplikacja'}</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={24} />
           </button>
         </div>
@@ -83,11 +88,11 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               type="text"
               value={formData.location}
               onChange={(e) => {
-                const cursorPosition = e.target.selectionStart;
-                onFormDataChange({ ...formData, location: e.target.value.toLowerCase() });
+                const cursorPosition = e.target.selectionStart
+                onFormDataChange({ ...formData, location: e.target.value.toLowerCase() })
                 setTimeout(() => {
-                  e.target.setSelectionRange(cursorPosition, cursorPosition);
-                }, 0);
+                  e.target.setSelectionRange(cursorPosition, cursorPosition)
+                }, 0)
               }}
               className="w-full p-2 border rounded font-mono"
               disabled={disabled}
@@ -100,14 +105,14 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               type="text"
               value={tagsArrayToString(formData.tags)}
               onChange={(e) => {
-                const cursorPosition = e.target.selectionStart;
+                const cursorPosition = e.target.selectionStart
                 onFormDataChange({
                   ...formData,
-                  tags: tagsStringToArray(e.target.value)
-                });
+                  tags: tagsStringToArray(e.target.value),
+                })
                 setTimeout(() => {
-                  e.target.setSelectionRange(cursorPosition, cursorPosition);
-                }, 0);
+                  e.target.setSelectionRange(cursorPosition, cursorPosition)
+                }, 0)
               }}
               className="w-full p-2 border rounded font-mono"
               placeholder="homeoffice, warsaw, java"
@@ -118,7 +123,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 {predefinedTags.map((tagGroup, groupIndex) => (
                   <div key={groupIndex} className="flex flex-wrap gap-2">
                     {tagGroup
-                      .filter(tag => !formData.tags.includes(tag))
+                      .filter((tag) => !formData.tags.includes(tag))
                       .map((tag, index) => (
                         <button
                           key={index}
@@ -168,17 +173,14 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
           )}
 
           {!disabled && (
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-mono"
-            >
+            <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-mono">
               {currentApplication ? 'Zapisz zmiany' : 'Dodaj aplikację'}
             </button>
           )}
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ApplicationModal;
+export default ApplicationModal

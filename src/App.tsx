@@ -1,9 +1,9 @@
-import React from 'react';
-import List from './components/List';
-import './App.css';
+import React from 'react'
+import List from './components/List'
+import './App.css'
 
 const App: React.FC = () => {
-  return <List />;
-};
+  return <List />
+}
 
-export default App;
+export default App
