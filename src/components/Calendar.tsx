@@ -5,19 +5,15 @@ interface CalendarProps {
   applications: JobApplication[];
 }
 
-interface DayProps {
-  date: Date;
-  counts: {
-    pending: number;
-    sent: number;
-    rejected: number;
-  };
-}
-
-interface WeekTotals {
+interface Totals {
   pending: number;
   sent: number;
   rejected: number;
+}
+
+interface DayProps {
+  date: Date;
+  counts: Totals;
 }
 
 const Calendar: React.FC<CalendarProps> = ({ applications }) => {
@@ -48,7 +44,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
     const year = today.getFullYear();
     const month = today.getMonth();
 
-    const firstDay = new Date(year, month, 1);
+    // const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const days: DayProps[] = [];
 
@@ -63,8 +59,16 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
   };
 
 
-  const getWeekTotals = (weekDays: DayProps[]): WeekTotals => {
+  const getWeekTotals = (weekDays: DayProps[]): Totals => {
     return weekDays.reduce((totals, day) => ({
+      pending: totals.pending + day.counts.pending,
+      sent: totals.sent + day.counts.sent,
+      rejected: totals.rejected + day.counts.rejected,
+    }), { pending: 0, sent: 0, rejected: 0 });
+  };
+
+  const getMonthTotals = () => {
+    return days.reduce((totals, day) => ({
       pending: totals.pending + day.counts.pending,
       sent: totals.sent + day.counts.sent,
       rejected: totals.rejected + day.counts.rejected,
@@ -112,6 +116,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
   const applicationCounts = getApplicationCountsByDay();
   const days = getDaysInMonth();
   const weekdays = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
+  const monthTotals = getMonthTotals();
 
   return (
     <div className="bg-white p-4 rounded shadow-sm mb-4">
@@ -133,8 +138,8 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
               <div
                 key={`${weekIndex}-${dayIndex}`}
                 className={`p-2 text-center rounded ${day.date.getMonth() === new Date().getMonth() ? // Sprawdzamy czy dzień należy do aktualnego miesiąca
-                    (day.counts.pending || day.counts.sent || day.counts.rejected ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-100')
-                    : 'text-gray-300' // Dni z poprzedniego/następnego miesiąca będą wyszarzone
+                  (day.counts.pending || day.counts.sent || day.counts.rejected ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-100')
+                  : 'text-gray-300' // Dni z poprzedniego/następnego miesiąca będą wyszarzone
                   }`}
                 title={day.counts.pending + day.counts.sent + day.counts.rejected ?
                   `Utworzone: ${day.counts.pending + day.counts.sent + day.counts.rejected}, Oczekuje: ${day.counts.pending}, Wysłane: ${day.counts.sent}, Odrzucone: ${day.counts.rejected}` :
@@ -158,19 +163,32 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
               return (
                 <div
                   className="p-2 text-center rounded bg-gray-50"
-                  title={`Tygodniowo - Utworzone: ${totals.pending + totals.sent + totals.rejected}, Oczekuje: ${totals.pending}, Wysłane: ${totals.sent}, Odrzucone: ${totals.rejected}`}
+                  title={totals.pending + totals.sent + totals.rejected ? `Utworzone: ${totals.pending + totals.sent + totals.rejected}, Oczekuje: ${totals.pending}, Wysłane: ${totals.sent}, Odrzucone: ${totals.rejected}` :
+                    'Brak aplikacji'}
                 >
-                  <div className="font-mono text-xs">Suma</div>
-                  <div className="font-mono">
-                    {totals.pending ? (<b className="text-blue-300"> {totals.pending} </b>) : ''}
-                    {totals.sent ? (<b className="text-green-400"> {totals.sent} </b>) : ''}
-                    {totals.rejected ? (<b className="text-red-300"> {totals.rejected} </b>) : ''}
+                  <div className="font-mono pt-4">
+                    {totals.pending + totals.sent + totals.rejected ?
+                      <>
+                        {totals.pending ? (<b className="text-blue-300"> {totals.pending} </b>) : ''}
+                        {totals.sent ? (<b className="text-green-400"> {totals.sent} </b>) : ''}
+                        {totals.rejected ? (<b className="text-red-300"> {totals.rejected} </b>) : ''}
+                      </> : <b className="text-gray-300">-</b>}
                   </div>
                 </div>
               );
             })()}
           </React.Fragment>
         ))}
+      </div>
+
+      {/* Monthly totals */}
+      <div className="mt-4 text-center">
+        <div className="font-mono">
+          <b className="text-sm text-gray-300">Utworzone:</b> {monthTotals.pending ? (<b className="text-gray-500"> {monthTotals.pending + monthTotals.sent + monthTotals.rejected} </b>) : ''}
+          <b className="text-sm text-gray-300">Niewysłane:</b> {monthTotals.pending ? (<b className="text-blue-300"> {monthTotals.pending} </b>) : ''}
+          <b className="text-sm text-gray-300">Aplikowane:</b> {monthTotals.sent ? (<b className="text-green-400"> {monthTotals.sent} </b>) : ''}
+          <b className="text-sm text-gray-300">Odrzucone:</b> {monthTotals.rejected ? (<b className="text-red-300"> {monthTotals.rejected} </b>) : ''}
+        </div>
       </div>
     </div>
   );
