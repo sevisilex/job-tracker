@@ -33,7 +33,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
       'laravel',
       'mysql',
     ].sort(),
-    ['agency', 'remote', 'hybrid', 'email', 'disabled'],
+    ['agency', 'remote', 'hybrid', 'email', 'disabled', 'english'],
     ['linkedin', 'xing', 'myability', 'stepstone', 'join'],
   ]
 

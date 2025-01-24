@@ -17,6 +17,16 @@ interface DayProps {
 }
 
 const Calendar: React.FC<CalendarProps> = ({ applications }) => {
+  const [currentDate, setCurrentDate] = React.useState(new Date())
+
+  const handlePreviousMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))
+  }
+
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
+  }
+
   const getApplicationCountsByDay = () => {
     const counts = new Map<string, { pending: number; sent: number; rejected: number }>()
 
@@ -40,11 +50,9 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
 
   // Generuj dni dla aktualnego miesiąca
   const getDaysInMonth = () => {
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = today.getMonth()
+    const year = currentDate.getFullYear()
+    const month = currentDate.getMonth()
 
-    // const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0)
     const days: DayProps[] = []
 
@@ -70,7 +78,9 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
   }
 
   const getMonthTotals = () => {
-    return days.reduce(
+    const currentMonthDays = days.filter(day => day.date.getMonth() === currentDate.getMonth())
+
+    return currentMonthDays.reduce(
       (totals, day) => ({
         pending: totals.pending + day.counts.pending,
         sent: totals.sent + day.counts.sent,
@@ -125,7 +135,15 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
 
   return (
     <div className="bg-white p-4 rounded shadow-sm mb-4">
-      <h3 className="font-mono text-xl font-semibold mb-4 text-center">{new Date().toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}</h3>
+      <div className="flex items-center justify-center gap-4 mb-4">
+        <button onClick={handlePreviousMonth} className="p-2 rounded hover:bg-gray-100" title="Poprzedni miesiąc">
+          ←
+        </button>
+        <h3 className="font-mono text-xl font-semibold">{currentDate.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}</h3>
+        <button onClick={handleNextMonth} className="p-2 rounded hover:bg-gray-100" title="Następny miesiąc">
+          →
+        </button>
+      </div>
 
       <div className="grid grid-cols-8 gap-1">
         {weekdays.map((day) => (
@@ -141,11 +159,11 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
               <div
                 key={`${weekIndex}-${dayIndex}`}
                 className={`p-2 text-center rounded ${
-                  day.date.getMonth() === new Date().getMonth() // Sprawdzamy czy dzień należy do aktualnego miesiąca
+                  day.date.getMonth() === currentDate.getMonth()
                     ? day.counts.pending || day.counts.sent || day.counts.rejected
                       ? 'bg-blue-50 hover:bg-blue-100'
                       : 'hover:bg-gray-100'
-                    : 'text-gray-300' // Dni z poprzedniego/następnego miesiąca będą wyszarzone
+                    : 'text-gray-300'
                 }`}
                 title={
                   day.counts.pending + day.counts.sent + day.counts.rejected
@@ -154,7 +172,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
                 }
               >
                 <div className="font-mono text-xs">{day.date.getDate()}</div>
-                {day.date.getMonth() === new Date().getMonth() && ( // Pokazujemy liczniki tylko dla dni z aktualnego miesiąca
+                {day.date.getMonth() === currentDate.getMonth() && (
                   <div className="font-mono">
                     {day.counts.pending ? <b className="text-blue-300"> {day.counts.pending} </b> : ''}
                     {day.counts.sent ? <b className="text-green-400"> {day.counts.sent} </b> : ''}
@@ -196,11 +214,10 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
       {/* Monthly totals */}
       <div className="mt-4 text-center">
         <div className="font-mono">
-          <b className="text-sm text-gray-300">Utworzone:</b>{' '}
-          {monthTotals.pending ? <b className="text-gray-500"> {monthTotals.pending + monthTotals.sent + monthTotals.rejected} </b> : ''}
-          <b className="text-sm text-gray-300">Niewysłane:</b> {monthTotals.pending ? <b className="text-blue-300"> {monthTotals.pending} </b> : ''}
-          <b className="text-sm text-gray-300">Aplikowane:</b> {monthTotals.sent ? <b className="text-green-400"> {monthTotals.sent} </b> : ''}
-          <b className="text-sm text-gray-300">Odrzucone:</b> {monthTotals.rejected ? <b className="text-red-300"> {monthTotals.rejected} </b> : ''}
+          <b className="text-sm text-gray-300">Utworzone:</b> <b className="text-gray-500"> {monthTotals.pending + monthTotals.sent + monthTotals.rejected} </b>
+          <b className="text-sm text-gray-300">Niewysłane:</b> <b className="text-blue-300"> {monthTotals.pending} </b> 
+          <b className="text-sm text-gray-300">Aplikowane:</b> <b className="text-green-400"> {monthTotals.sent} </b> 
+          <b className="text-sm text-gray-300">Odrzucone:</b>  <b className="text-red-300"> {monthTotals.rejected} </b> 
         </div>
       </div>
     </div>
