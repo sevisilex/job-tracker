@@ -7,6 +7,7 @@ import ApplicationModal from './ApplicationModal'
 import ConfirmModal from './ConfirmModal'
 import PromptModal from './PromptModal'
 import CalendarModal from './CalendarModal'
+import { formatDate } from '@/utils/dateFormatter'
 
 const List: React.FC = () => {
   const [applications, setApplications] = useState<JobApplication[]>([])
@@ -197,12 +198,18 @@ const List: React.FC = () => {
     .filter((app) => {
       if (!searchTerm) return true
       const searchLower = searchTerm.toLowerCase()
+      const createdAtLocal = app.createdAt ? formatDate(app.createdAt) : ''
+      const appliedAtLocal = app.appliedAt ? formatDate(app.appliedAt) : ''
+      const rejectedAtLocal = app.rejectedAt ? formatDate(app.rejectedAt) : ''
       return (
         app.title.toLowerCase().includes(searchLower) ||
         app.description.toLowerCase().includes(searchLower) ||
         app.location.toLowerCase().includes(searchLower) ||
         app.url.toLowerCase().includes(searchLower) ||
-        app.tags.some((tag) => tag.toLowerCase().includes(searchLower))
+        app.tags.some((tag) => tag.toLowerCase().includes(searchLower)) ||
+        createdAtLocal.includes(searchLower) ||
+        appliedAtLocal.includes(searchLower) ||
+        rejectedAtLocal.includes(searchLower)
       )
     })
     .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))

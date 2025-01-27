@@ -78,7 +78,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
   }
 
   const getMonthTotals = () => {
-    const currentMonthDays = days.filter(day => day.date.getMonth() === currentDate.getMonth())
+    const currentMonthDays = days.filter((day) => day.date.getMonth() === currentDate.getMonth())
 
     return currentMonthDays.reduce(
       (totals, day) => ({
@@ -215,9 +215,9 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
       <div className="mt-4 text-center">
         <div className="font-mono">
           <b className="text-sm text-gray-300">Utworzone:</b> <b className="text-gray-500"> {monthTotals.pending + monthTotals.sent + monthTotals.rejected} </b>
-          <b className="text-sm text-gray-300">Niewysłane:</b> <b className="text-blue-300"> {monthTotals.pending} </b> 
-          <b className="text-sm text-gray-300">Aplikowane:</b> <b className="text-green-400"> {monthTotals.sent} </b> 
-          <b className="text-sm text-gray-300">Odrzucone:</b>  <b className="text-red-300"> {monthTotals.rejected} </b> 
+          <b className="text-sm text-gray-300">Niewysłane:</b> <b className="text-blue-300"> {monthTotals.pending} </b>
+          <b className="text-sm text-gray-300">Aplikowane:</b> <b className="text-green-400"> {monthTotals.sent} </b>
+          <b className="text-sm text-gray-300">Odrzucone:</b> <b className="text-red-300"> {monthTotals.rejected} </b>
         </div>
       </div>
     </div>
