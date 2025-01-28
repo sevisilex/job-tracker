@@ -1,6 +1,7 @@
 import React from 'react'
 import { X } from 'lucide-react'
 import { JobApplication, FormData, tagsStringToArray, tagsArrayToString } from '../types'
+import { formatDate } from '@/utils/dateFormatter'
 
 interface ApplicationModalProps {
   isOpen: boolean
@@ -13,6 +14,8 @@ interface ApplicationModalProps {
 }
 
 const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentApplication, formData, disabled = false, onClose, onSubmit, onFormDataChange }) => {
+  const [showDates, setShowDates] = React.useState(false);
+
   const predefinedTags = [
     [
       'typescript',
@@ -52,13 +55,84 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg w-4/5 max-h-screen overflow-y-auto p-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-mono font-bold">{disabled ? 'Zarchiwizowane' : currentApplication ? 'Edytuj aplikację' : 'Nowa aplikacja'}</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-mono font-bold">
+              {disabled ? 'Zarchiwizowane' : currentApplication ? 'Edytuj aplikację' : 'Nowa aplikacja'}
+            </h2>
+            {currentApplication && !disabled && (
+              <button
+                type="button"
+                onClick={() => setShowDates(!showDates)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-mono text-sm py-1 px-3 rounded"
+              >
+                {showDates ? 'Ukryj daty' : 'Pokaż daty'}
+              </button>
+            )}
+          </div>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={24} />
           </button>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-6">
+
+          {currentApplication && showDates && (
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div>
+                <label className="font-mono block mb-2 text-sm">Data utworzenia</label>
+                <input
+                  type="text"
+                  value={formatDate(formData.createdAt || currentApplication.createdAt)}
+                  onChange={(e) => {
+                    const dateStr = e.target.value.replace(/\./g, '-')
+                    const date = new Date(dateStr)
+                    if (!isNaN(date.getTime())) {
+                      onFormDataChange({ ...formData, createdAt: date.toISOString() })
+                    }
+                  }}
+                  className="w-full p-2 border rounded font-mono text-sm"
+                  placeholder="RRRR.MM.DD GG:MM"
+                />
+              </div>
+
+              <div>
+                <label className="font-mono block mb-2 text-sm">Data aplikacji</label>
+                <input
+                  type="text"
+                  value={currentApplication.appliedAt ? formatDate(formData.appliedAt || currentApplication.appliedAt) : ''}
+                  onChange={(e) => {
+                    const dateStr = e.target.value.replace(/\./g, '-')
+                    const date = new Date(dateStr)
+                    if (!isNaN(date.getTime())) {
+                      onFormDataChange({ ...formData, appliedAt: date.toISOString() })
+                    }
+                  }}
+                  className="w-full p-2 border rounded font-mono text-sm"
+                  placeholder="RRRR.MM.DD GG:MM"
+                  disabled={!currentApplication.appliedAt}
+                />
+              </div>
+
+              <div>
+                <label className="font-mono block mb-2 text-sm">Data odrzucenia</label>
+                <input
+                  type="text"
+                  value={currentApplication.rejectedAt ? formatDate(formData.rejectedAt || currentApplication.rejectedAt) : ''}
+                  onChange={(e) => {
+                    const dateStr = e.target.value.replace(/\./g, '-')
+                    const date = new Date(dateStr)
+                    if (!isNaN(date.getTime())) {
+                      onFormDataChange({ ...formData, rejectedAt: date.toISOString() })
+                    }
+                  }}
+                  className="w-full p-2 border rounded font-mono text-sm"
+                  placeholder="RRRR.MM.DD GG:MM"
+                  disabled={!currentApplication.rejectedAt}
+                />
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="font-mono block mb-2">Tytuł</label>
             <input
@@ -90,9 +164,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
               onChange={(e) => {
                 const cursorPosition = e.target.selectionStart
                 onFormDataChange({ ...formData, location: e.target.value.toLowerCase() })
-                setTimeout(() => {
-                  e.target.setSelectionRange(cursorPosition, cursorPosition)
-                }, 0)
+                setTimeout(() => { e.target.setSelectionRange(cursorPosition, cursorPosition) }, 0)
               }}
               className="w-full p-2 border rounded font-mono"
               disabled={disabled}
@@ -106,13 +178,8 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
               value={tagsArrayToString(formData.tags)}
               onChange={(e) => {
                 const cursorPosition = e.target.selectionStart
-                onFormDataChange({
-                  ...formData,
-                  tags: tagsStringToArray(e.target.value),
-                })
-                setTimeout(() => {
-                  e.target.setSelectionRange(cursorPosition, cursorPosition)
-                }, 0)
+                onFormDataChange({ ...formData, tags: tagsStringToArray(e.target.value), })
+                setTimeout(() => { e.target.setSelectionRange(cursorPosition, cursorPosition) }, 0)
               }}
               className="w-full p-2 border rounded font-mono"
               placeholder="homeoffice, warsaw, java"

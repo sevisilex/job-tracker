@@ -43,13 +43,16 @@ const List: React.FC = () => {
 
     const application: JobApplication = {
       ...formData,
-      createdAt: currentApplication?.createdAt || new Date().toISOString(),
-      appliedAt: currentApplication?.appliedAt || null,
-      rejectedAt: currentApplication?.rejectedAt || null,
+      createdAt: formData.createdAt || currentApplication?.createdAt || new Date().toISOString(),
+      appliedAt: formData.appliedAt || currentApplication?.appliedAt || null,
+      rejectedAt: formData.rejectedAt || currentApplication?.rejectedAt || null,
       archivedAt: currentApplication?.archivedAt || null,
     }
 
     await saveApplication(application)
+    if (currentApplication && currentApplication.createdAt !== application.createdAt) {
+      await deleteApplication(currentApplication.createdAt)
+    }        
 
     setIsModalOpen(false)
     setCurrentApplication(null)
