@@ -3,6 +3,7 @@ import { JobApplication } from '../types'
 
 interface CalendarProps {
   applications: JobApplication[]
+  onDateClick?: (date: string) => void
 }
 
 interface Totals {
@@ -16,7 +17,7 @@ interface DayProps {
   counts: Totals
 }
 
-const Calendar: React.FC<CalendarProps> = ({ applications }) => {
+const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
   const [currentDate, setCurrentDate] = React.useState(new Date())
 
   const handlePreviousMonth = () => {
@@ -155,32 +156,45 @@ const Calendar: React.FC<CalendarProps> = ({ applications }) => {
 
         {splitIntoWeeks(days).map((week, weekIndex) => (
           <React.Fragment key={weekIndex}>
-            {week.map((day, dayIndex) => (
-              <div
-                key={`${weekIndex}-${dayIndex}`}
-                className={`p-2 text-center rounded ${
-                  day.date.getMonth() === currentDate.getMonth()
-                    ? day.counts.pending || day.counts.sent || day.counts.rejected
-                      ? 'bg-blue-50 hover:bg-blue-100'
-                      : 'hover:bg-gray-100'
-                    : 'text-gray-300'
-                }`}
-                title={
-                  day.counts.pending + day.counts.sent + day.counts.rejected
-                    ? `Utworzone: ${day.counts.pending + day.counts.sent + day.counts.rejected}, Oczekuje: ${day.counts.pending}, Wysłane: ${day.counts.sent}, Odrzucone: ${day.counts.rejected}`
-                    : 'Brak aplikacji'
-                }
-              >
-                <div className="font-mono text-xs">{day.date.getDate()}</div>
-                {day.date.getMonth() === currentDate.getMonth() && (
-                  <div className="font-mono">
-                    {day.counts.pending ? <b className="text-blue-300"> {day.counts.pending} </b> : ''}
-                    {day.counts.sent ? <b className="text-green-400"> {day.counts.sent} </b> : ''}
-                    {day.counts.rejected ? <b className="text-red-300"> {day.counts.rejected} </b> : ''}
-                  </div>
-                )}
-              </div>
-            ))}
+            {week.map((day, dayIndex) => {
+              const hasApplications = day.counts.pending + day.counts.sent + day.counts.rejected > 0
+
+              return (
+                <div
+                  key={`${weekIndex}-${dayIndex}`}
+                  className={`p-2 text-center rounded ${
+                    day.date.getMonth() === currentDate.getMonth()
+                      ? hasApplications
+                        ? 'bg-blue-50 hover:bg-blue-100 cursor-pointer'
+                        : 'cursor-default' // zmiana z cursor-pointer na cursor-default dla pustych dni
+                      : 'text-gray-300 cursor-default'
+                  }`}
+                  onClick={() => {
+                    if (hasApplications && onDateClick) {
+                      const formattedDate = `${day.date.getFullYear()}.${String(day.date.getMonth() + 1).padStart(
+                        2,
+                        '0'
+                      )}.${String(day.date.getDate()).padStart(2, '0')}`
+                      onDateClick(formattedDate)
+                    }
+                  }}
+                  title={
+                    day.counts.pending + day.counts.sent + day.counts.rejected
+                      ? `Utworzone: ${day.counts.pending + day.counts.sent + day.counts.rejected}, Oczekuje: ${day.counts.pending}, Wysłane: ${day.counts.sent}, Odrzucone: ${day.counts.rejected}`
+                      : 'Brak aplikacji'
+                  }
+                >
+                  <div className="font-mono text-xs">{day.date.getDate()}</div>
+                  {day.date.getMonth() === currentDate.getMonth() && (
+                    <div className="font-mono">
+                      {day.counts.pending ? <b className="text-blue-300"> {day.counts.pending} </b> : ''}
+                      {day.counts.sent ? <b className="text-green-400"> {day.counts.sent} </b> : ''}
+                      {day.counts.rejected ? <b className="text-red-300"> {day.counts.rejected} </b> : ''}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
             {/* Weekly totals */}
             {(() => {
               const totals = getWeekTotals(week.filter((day) => day.counts.pending + day.counts.sent + day.counts.rejected > 0))

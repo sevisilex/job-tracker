@@ -7,9 +7,10 @@ interface CalendarModalProps {
   isOpen: boolean
   onClose: () => void
   applications: JobApplication[]
+  onDateClick?: (date: string) => void
 }
 
-const CalendarModal: React.FC<CalendarModalProps> = ({ isOpen, onClose, applications }) => {
+const CalendarModal: React.FC<CalendarModalProps> = ({ isOpen, onClose, applications, onDateClick }) => {
   if (!isOpen) return null
 
   return (
@@ -22,7 +23,15 @@ const CalendarModal: React.FC<CalendarModalProps> = ({ isOpen, onClose, applicat
           </button>
         </div>
 
-        <Calendar applications={applications} />
+        <Calendar
+          applications={applications}
+          onDateClick={(date) => {
+            if (onDateClick) {
+              onDateClick(date)
+              onClose()
+            }
+          }}
+        />
       </div>
     </div>
   )

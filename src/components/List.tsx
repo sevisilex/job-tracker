@@ -52,7 +52,7 @@ const List: React.FC = () => {
     await saveApplication(application)
     if (currentApplication && currentApplication.createdAt !== application.createdAt) {
       await deleteApplication(currentApplication.createdAt)
-    }        
+    }
 
     setIsModalOpen(false)
     setCurrentApplication(null)
@@ -275,7 +275,15 @@ const List: React.FC = () => {
         />
       </div>
 
-      <CalendarModal isOpen={isCalendarModalOpen} onClose={() => setIsCalendarModalOpen(false)} applications={applications} />
+      <CalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+        applications={applications}
+        onDateClick={(date) => {
+          setSearchTerm(date)
+          setIsCalendarModalOpen(false)
+        }}
+      />
 
       <ConfirmModal
         isOpen={confirmModal.isOpen}

@@ -20,7 +20,7 @@ export interface FormData {
   tags: string[]
   url: string
   url2: string | null
-  rejectedReason: string
+  rejectedReason?: string
   createdAt?: string
   appliedAt?: string
   rejectedAt?: string
