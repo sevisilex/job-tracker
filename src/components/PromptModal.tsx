@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { X } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 
 interface PromptModalProps {
   isOpen: boolean
@@ -9,6 +10,8 @@ interface PromptModalProps {
 }
 
 const PromptModal: React.FC<PromptModalProps> = ({ isOpen, message, onConfirm, onClose }) => {
+  const { t } = useLanguage()
+
   const [value, setValue] = useState('')
 
   if (!isOpen) return null
@@ -17,7 +20,7 @@ const PromptModal: React.FC<PromptModalProps> = ({ isOpen, message, onConfirm, o
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-8 max-w-md w-full">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-mono font-bold">Wprowadź wartość</h2>
+          <h2 className="text-2xl font-mono font-bold">{t('common.enterValue')}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={24} />
           </button>
@@ -29,7 +32,7 @@ const PromptModal: React.FC<PromptModalProps> = ({ isOpen, message, onConfirm, o
 
         <div className="flex justify-end space-x-4">
           <button onClick={onClose} className="px-4 py-2 border rounded font-mono hover:bg-gray-100">
-            Anuluj
+            {t('common.cancel')}
           </button>
           <button
             onClick={() => {
@@ -39,7 +42,7 @@ const PromptModal: React.FC<PromptModalProps> = ({ isOpen, message, onConfirm, o
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded font-mono hover:bg-blue-600"
           >
-            Potwierdź
+            {t('common.confirm')}
           </button>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import React from 'react'
 import { Plus, RotateCcw, Archive, Download, Search, Upload, Calendar as CalendarIcon, X } from 'lucide-react'
 import { exportApplications, importApplications } from '@/lib/db'
+import { useLanguage } from '../contexts/LanguageContext'
+import LanguageSelector from './LanguageSelector'
 
 interface HeaderProps {
   showArchived: boolean
@@ -27,6 +29,8 @@ const Header: React.FC<HeaderProps> = ({
   onToggleRejected,
   onShowCalendar,
 }) => {
+  const { t } = useLanguage()
+
   const searchInputRef = React.useRef<HTMLInputElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
@@ -37,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({
     try {
       const result = await importApplications(file)
       alert(`Zaimportowano ${result.imported} aplikacji, pominięto ${result.skipped} aplikacji.`)
-      window.location.reload() // Odśwież stronę aby pokazać zaimportowane dane
+      window.location.reload()
     } catch (error) {
       alert('Błąd podczas importowania: ' + (error as Error).message)
     }
@@ -67,36 +71,39 @@ const Header: React.FC<HeaderProps> = ({
     <>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-mono font-bold">{showArchived ? 'Zarchiwizowane Aplikacje' : 'Lista Aplikacji o Pracę'}</h1>
+          <h1 className="text-3xl font-mono font-bold">{t(showArchived ? 'applications.archived' : 'applications.title')}</h1>
           <div className="flex gap-4 mt-2">
             <button onClick={onArchiveToggle} className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2">
               {showArchived ? <RotateCcw size={16} /> : <Archive size={16} />}
-              {showArchived ? 'Powrót do aktywnych' : 'Pokaż zarchiwizowane'}
+              {t(showArchived ? 'applications.showActive' : 'applications.showArchived')}
             </button>
 
             <button onClick={onShowCalendar} className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2">
               <CalendarIcon size={20} className="mr-2" />
-              Kalendarz
+              {t('applications.calendar')}
             </button>
 
             <button onClick={exportApplications} className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2">
               <Download size={16} />
-              Eksportuj wszystko
+              {t('applications.exportAll')}
             </button>
 
             <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
             <button onClick={() => fileInputRef.current?.click()} className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2">
               <Upload size={16} />
-              Importuj
+              {t('applications.import')}
             </button>
           </div>
         </div>
+
         {!showArchived && (
           <button onClick={onAddNew} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 font-mono">
             <Plus size={20} />
-            Dodaj
+            {t('common.create')}
           </button>
         )}
+
+        <LanguageSelector />
       </div>
 
       <div className="mb-6">
@@ -106,7 +113,7 @@ const Header: React.FC<HeaderProps> = ({
             type="text"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Szukaj w tytułach, tagach, lokalizacji..."
+            placeholder={t('applications.searchPlaceholder')}
             className="w-full p-2 pl-10 border rounded font-mono"
           />
           <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
@@ -122,11 +129,11 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex gap-4 mb-4">
           <label className="flex items-center gap-2 font-mono">
             <input type="checkbox" checked={isApplied} onChange={onToggleApplied} className="form-checkbox h-4 w-4 text-blue-500" />
-            Aplikowane
+            {t('applications.applied')}
           </label>
           <label className="flex items-center gap-2 font-mono">
             <input type="checkbox" checked={isRejected} onChange={onToggleRejected} className="form-checkbox h-4 w-4 text-blue-500" />
-            Odrzucone
+            {t('applications.rejected')}
           </label>
         </div>
       )}

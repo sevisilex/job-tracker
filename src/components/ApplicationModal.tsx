@@ -1,6 +1,7 @@
 import React from 'react'
 import { X } from 'lucide-react'
 import { JobApplication, FormData, tagsStringToArray, tagsArrayToString } from '../types'
+import { useLanguage } from '../contexts/LanguageContext'
 import { formatDate } from '@/utils/dateFormatter'
 
 interface ApplicationModalProps {
@@ -14,6 +15,8 @@ interface ApplicationModalProps {
 }
 
 const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentApplication, formData, disabled = false, onClose, onSubmit, onFormDataChange }) => {
+  const { t } = useLanguage()
+
   const [showDates, setShowDates] = React.useState(false)
 
   const predefinedTags = [
@@ -56,14 +59,16 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
       <div className="bg-white rounded-lg w-4/5 max-h-screen overflow-y-auto p-8">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-mono font-bold">{disabled ? 'Zarchiwizowane' : currentApplication ? 'Edytuj aplikację' : 'Nowa aplikacja'}</h2>
+            <h2 className="text-2xl font-mono font-bold">
+              {t(disabled ? 'applications.archived' : currentApplication ? 'applications.editApplication' : 'applications.newApplication')}
+            </h2>
             {currentApplication && !disabled && (
               <button
                 type="button"
                 onClick={() => setShowDates(!showDates)}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-mono text-sm py-1 px-3 rounded"
               >
-                {showDates ? 'Ukryj daty' : 'Pokaż daty'}
+                {t(showDates ? 'form.hideDates' : 'form.showDates')}
               </button>
             )}
           </div>
@@ -76,7 +81,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
           {currentApplication && showDates && (
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div>
-                <label className="font-mono block mb-2 text-sm">Data utworzenia</label>
+                <label className="font-mono block mb-2 text-sm">{t('form.creationDate')}</label>
                 <input
                   type="text"
                   value={formatDate(formData.createdAt || currentApplication.createdAt)}
@@ -93,7 +98,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
               </div>
 
               <div>
-                <label className="font-mono block mb-2 text-sm">Data aplikacji</label>
+                <label className="font-mono block mb-2 text-sm">{t('form.applicationDate')}</label>
                 <input
                   type="text"
                   value={currentApplication.appliedAt ? formatDate(formData.appliedAt || currentApplication.appliedAt) : ''}
@@ -111,7 +116,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
               </div>
 
               <div>
-                <label className="font-mono block mb-2 text-sm">Data odrzucenia</label>
+                <label className="font-mono block mb-2 text-sm">{t('form.rejectionDate')}</label>
                 <input
                   type="text"
                   value={currentApplication.rejectedAt ? formatDate(formData.rejectedAt || currentApplication.rejectedAt) : ''}
@@ -131,7 +136,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
           )}
 
           <div>
-            <label className="font-mono block mb-2">Tytuł</label>
+            <label className="font-mono block mb-2">{t('form.title')}</label>
             <input
               type="text"
               value={formData.title}
@@ -143,7 +148,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
           </div>
 
           <div>
-            <label className="font-mono block mb-2">Opis</label>
+            <label className="font-mono block mb-2">{t('form.description')}</label>
             <textarea
               value={formData.description}
               onChange={(e) => onFormDataChange({ ...formData, description: e.target.value })}
@@ -154,7 +159,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
           </div>
 
           <div>
-            <label className="font-mono block mb-2">Lokalizacja</label>
+            <label className="font-mono block mb-2">{t('form.location')}</label>
             <input
               type="text"
               value={formData.location}
@@ -171,7 +176,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
           </div>
 
           <div>
-            <label className="font-mono block mb-2">Tagi</label>
+            <label className="font-mono block mb-2">{t('form.tags')}</label>
             <input
               type="text"
               value={tagsArrayToString(formData.tags)}
@@ -210,7 +215,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
           </div>
 
           <div>
-            <label className="font-mono block mb-2">URL</label>
+            <label className="font-mono block mb-2">{t('form.url')}</label>
             <input
               type="url"
               value={formData.url}
@@ -229,7 +234,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
 
           {currentApplication?.rejectedAt && (
             <div>
-              <label className="font-mono block mb-2">Powód odrzucenia</label>
+              <label className="font-mono block mb-2">{t('form.rejectionReason')}</label>
               <input
                 type="text"
                 value={formData.rejectedReason || ''}
@@ -242,7 +247,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
 
           {!disabled && (
             <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 font-mono">
-              {currentApplication ? 'Zapisz zmiany' : 'Dodaj aplikację'}
+              {t(currentApplication ? 'common.save' : 'common.create')}
             </button>
           )}
         </form>

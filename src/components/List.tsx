@@ -8,8 +8,11 @@ import ConfirmModal from './ConfirmModal'
 import PromptModal from './PromptModal'
 import CalendarModal from './CalendarModal'
 import { formatDate } from '@/utils/dateFormatter'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const List: React.FC = () => {
+  const { t } = useLanguage()
+
   const [applications, setApplications] = useState<JobApplication[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentApplication, setCurrentApplication] = useState<JobApplication | null>(null)
@@ -119,9 +122,7 @@ const List: React.FC = () => {
   const handleApplyToggle = async (app: JobApplication) => {
     if (!app.createdAt) return
 
-    const message = app.appliedAt
-      ? 'Czy na pewno chcesz cofnąć status aplikacji? Data aplikacji zostanie usunięta.'
-      : 'Czy chcesz oznaczyć aplikację jako wysłaną? Zostanie ustawiona dzisiejsza data.'
+    const message = app.appliedAt ? t('list.undoApplicationStatus') : t('list.markAsApplied')
 
     const confirmed = await showConfirmation(message)
     if (confirmed) {
@@ -137,7 +138,7 @@ const List: React.FC = () => {
     if (!app.createdAt) return
 
     if (!app.rejectedAt && !app.rejectedReason) {
-      const reason = await showPrompt('Czy chcesz oznaczyć aplikację jako odrzuconą? Podaj powód i zostanie ustawiona dzisiejsza data. Bez powodu to wpisz "."')
+      const reason = await showPrompt(t('list.markAsRejected'))
       if (reason) {
         await updateApplicationStatus(app.createdAt, {
           rejectedAt: new Date().toISOString(),
@@ -146,9 +147,7 @@ const List: React.FC = () => {
         await loadApplications()
       }
     } else {
-      const message = app.rejectedAt
-        ? 'Czy na pewno chcesz cofnąć status odrzucenia? Data odrzucenia zostanie usunięta.'
-        : 'Czy chcesz oznaczyć aplikację jako odrzuconą? Zostanie ustawiona dzisiejsza data.'
+      const message = app.rejectedAt ? t('list.undoRejectionStatus') : t('list.markAsRejected')
 
       const confirmed = await showConfirmation(message)
       if (confirmed) {
@@ -164,7 +163,7 @@ const List: React.FC = () => {
   const handleArchiveToggle = async (app: JobApplication) => {
     if (!app.createdAt) return
 
-    const message = app.archivedAt ? 'Czy chcesz przywrócić tę aplikację z archiwum?' : 'Czy chcesz przenieść tę aplikację do archiwum?'
+    const message = app.archivedAt ? t('list.restoreFromArchive') : t('list.moveToArchive')
 
     const confirmed = await showConfirmation(message)
     if (confirmed) {
@@ -177,7 +176,7 @@ const List: React.FC = () => {
 
   // Update handleDelete
   const handleDelete = async (createdAt: string) => {
-    const confirmed = await showConfirmation('Czy na pewno chcesz trwale usunąć tę aplikację? Tej operacji nie można cofnąć.')
+    const confirmed = await showConfirmation(t('list.confirmDelete'))
     if (confirmed) {
       await deleteApplication(createdAt)
       await loadApplications()

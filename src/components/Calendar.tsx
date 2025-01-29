@@ -1,4 +1,5 @@
 import React from 'react'
+import { useLanguage } from '../contexts/LanguageContext'
 import { JobApplication } from '../types'
 
 interface CalendarProps {
@@ -18,6 +19,8 @@ interface DayProps {
 }
 
 const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
+  const { t } = useLanguage()
+
   const [currentDate, setCurrentDate] = React.useState(new Date())
 
   const handlePreviousMonth = () => {
@@ -131,17 +134,28 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
 
   const applicationCounts = getApplicationCountsByDay()
   const days = getDaysInMonth()
-  const weekdays = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz']
+  const weekdays = [
+    t('calendar.weekdays.mon'),
+    t('calendar.weekdays.tue'),
+    t('calendar.weekdays.wed'),
+    t('calendar.weekdays.thu'),
+    t('calendar.weekdays.fri'),
+    t('calendar.weekdays.sat'),
+    t('calendar.weekdays.sun'),
+  ]
+  const monthName = t(`calendar.months.${currentDate.toLocaleDateString('en-US', { month: 'short' }).toLowerCase()}`)
   const monthTotals = getMonthTotals()
 
   return (
     <div className="bg-white p-4 rounded shadow-sm mb-4">
       <div className="flex items-center justify-center gap-4 mb-4">
-        <button onClick={handlePreviousMonth} className="p-2 rounded hover:bg-gray-100" title="Poprzedni miesiąc">
+        <button onClick={handlePreviousMonth} className="p-2 rounded hover:bg-gray-100" title={t('calendar.previousMonth')}>
           ←
         </button>
-        <h3 className="font-mono text-xl font-semibold">{currentDate.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}</h3>
-        <button onClick={handleNextMonth} className="p-2 rounded hover:bg-gray-100" title="Następny miesiąc">
+        <h3 className="font-mono text-xl font-semibold">
+          {monthName} {currentDate.getFullYear()}
+        </h3>
+        <button onClick={handleNextMonth} className="p-2 rounded hover:bg-gray-100" title={t('calendar.nextMonth')}>
           →
         </button>
       </div>
@@ -152,7 +166,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
             {day}
           </div>
         ))}
-        <div className="text-center font-mono text-sm p-2">Tydzień</div>
+        <div className="text-center font-mono text-sm p-2">{t('calendar.week')}</div>
 
         {splitIntoWeeks(days).map((week, weekIndex) => (
           <React.Fragment key={weekIndex}>
@@ -180,8 +194,8 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
                   }}
                   title={
                     day.counts.pending + day.counts.sent + day.counts.rejected
-                      ? `Utworzone: ${day.counts.pending + day.counts.sent + day.counts.rejected}, Oczekuje: ${day.counts.pending}, Wysłane: ${day.counts.sent}, Odrzucone: ${day.counts.rejected}`
-                      : 'Brak aplikacji'
+                      ? `${t('calendar.created')}: ${day.counts.pending + day.counts.sent + day.counts.rejected}, ${t('calendar.pending')}: ${day.counts.pending}, ${t('calendar.applied')}: ${day.counts.sent}, ${t('calendar.rejected')}: ${day.counts.rejected}`
+                      : t('calendar.noApplication')
                   }
                 >
                   <div className="font-mono text-xs">{day.date.getDate()}</div>
@@ -203,8 +217,8 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
                   className="p-2 text-center rounded bg-gray-50"
                   title={
                     totals.pending + totals.sent + totals.rejected
-                      ? `Utworzone: ${totals.pending + totals.sent + totals.rejected}, Oczekuje: ${totals.pending}, Wysłane: ${totals.sent}, Odrzucone: ${totals.rejected}`
-                      : 'Brak aplikacji'
+                      ? `${t('calendar.created')}: ${totals.pending + totals.sent + totals.rejected}, ${t('calendar.pending')}: ${totals.pending}, ${t('calendar.applied')}: ${totals.sent}, ${t('calendar.rejected')}: ${totals.rejected}`
+                      : t('calendar.noApplication')
                   }
                 >
                   <div className="font-mono pt-4">
@@ -228,10 +242,11 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
       {/* Monthly totals */}
       <div className="mt-4 text-center">
         <div className="font-mono">
-          <b className="text-sm text-gray-300">Utworzone:</b> <b className="text-gray-500"> {monthTotals.pending + monthTotals.sent + monthTotals.rejected} </b>
-          <b className="text-sm text-gray-300">Niewysłane:</b> <b className="text-blue-300"> {monthTotals.pending} </b>
-          <b className="text-sm text-gray-300">Aplikowane:</b> <b className="text-green-400"> {monthTotals.sent} </b>
-          <b className="text-sm text-gray-300">Odrzucone:</b> <b className="text-red-300"> {monthTotals.rejected} </b>
+          <b className="text-sm text-gray-300">{t('calendar.created')}:</b>{' '}
+          <b className="text-gray-500"> {monthTotals.pending + monthTotals.sent + monthTotals.rejected} </b>
+          <b className="text-sm text-gray-300">{t('calendar.pending')}:</b> <b className="text-blue-300"> {monthTotals.pending} </b>
+          <b className="text-sm text-gray-300">{t('calendar.applied')}:</b> <b className="text-green-400"> {monthTotals.sent} </b>
+          <b className="text-sm text-gray-300">{t('calendar.rejected')}:</b> <b className="text-red-300"> {monthTotals.rejected} </b>
         </div>
       </div>
     </div>
