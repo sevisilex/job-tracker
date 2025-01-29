@@ -84,7 +84,7 @@ export const deleteApplication = async (createdAt: string): Promise<void> => {
 export const exportApplications = async (): Promise<void> => {
   const applications = await getAllApplications()
 
-  const cleanApplications = applications.map((app) => Object.fromEntries(Object.entries(app).filter(([_, v]) => v != null)))
+  const cleanApplications = applications.map((app) => Object.fromEntries(Object.entries(app).filter(([, v]) => v != null)))
   const data = JSON.stringify(cleanApplications, null, 2)
 
   const blob = new Blob([data], { type: 'application/json' })

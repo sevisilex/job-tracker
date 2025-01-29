@@ -11,23 +11,29 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
+interface TranslationValue {
+  [key: string]: string | TranslationValue
+}
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('pl')
 
-  const t = (key: string) => {
+  const t = (key: string): string => {
     const keys = key.split('.')
-    let current: any = translations[language]
+    let current: TranslationValue = translations[language]
 
     for (const k of keys) {
       if (current[k] === undefined) {
         console.warn(`Translation missing for key: ${key} in language: ${language}`)
         return key
       }
+      if (typeof current[k] === 'string') {
+        return current[k]
+      }
       current = current[k]
     }
-
-    return current
     // return `💖`
+    return key
   }
 
   return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>

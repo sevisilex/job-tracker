@@ -50,6 +50,7 @@ const List: React.FC = () => {
       appliedAt: formData.appliedAt || currentApplication?.appliedAt || null,
       rejectedAt: formData.rejectedAt || currentApplication?.rejectedAt || null,
       archivedAt: currentApplication?.archivedAt || null,
+      rejectedReason: formData.rejectedReason ?? null,
     }
 
     await saveApplication(application)

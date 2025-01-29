@@ -1,8 +1,7 @@
 import React from 'react'
-import { Plus, RotateCcw, Archive, Download, Search, Upload, Calendar as CalendarIcon, X } from 'lucide-react'
+import { Plus, RotateCcw, Archive, Download, Search, Upload, Calendar as CalendarIcon, X, Languages } from 'lucide-react'
 import { exportApplications, importApplications } from '@/lib/db'
 import { useLanguage } from '../contexts/LanguageContext'
-import LanguageSelector from './LanguageSelector'
 
 interface HeaderProps {
   showArchived: boolean
@@ -29,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
   onToggleRejected,
   onShowCalendar,
 }) => {
-  const { t } = useLanguage()
+  const { t, language, setLanguage } = useLanguage()
 
   const searchInputRef = React.useRef<HTMLInputElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
@@ -72,6 +71,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-mono font-bold">{t(showArchived ? 'applications.archived' : 'applications.title')}</h1>
+
           <div className="flex gap-4 mt-2">
             <button onClick={onArchiveToggle} className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2">
               {showArchived ? <RotateCcw size={16} /> : <Archive size={16} />}
@@ -95,15 +95,21 @@ const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
         </div>
-
-        {!showArchived && (
-          <button onClick={onAddNew} className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2 font-mono">
-            <Plus size={20} />
-            {t('common.create')}
+        <div className="flex flex-col items-end">
+          <button
+            onClick={() => setLanguage(language === 'en' ? 'de' : language === 'de' ? 'pl' : 'en')}
+            className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
+          >
+            <Languages size={16} />
+            {language === 'en' ? 'English' : language === 'de' ? 'Deutsch' : language === 'pl' ? 'Polski' : 'Unknown'}
           </button>
-        )}
-
-        <LanguageSelector />
+          {!showArchived && (
+            <button onClick={onAddNew} className="bg-blue-500 text-white px-4 py-2 rounded font-mono flex items-center gap-2">
+              <Plus size={20} />
+              {t('common.create')}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mb-6">
