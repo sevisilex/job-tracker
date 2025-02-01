@@ -20,6 +20,7 @@ const List: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [isApplied, setIsApplied] = useState(true)
   const [isRejected, setIsRejected] = useState(true)
+  const [isFavorite, setIsFavorite] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
 
   const [formData, setFormData] = useState<FormData>({
@@ -160,6 +161,16 @@ const List: React.FC = () => {
     }
   }
 
+  // Update handleFavoriteToggle
+  const handleFavoriteToggle = async (app: JobApplication) => {
+    if (!app.createdAt) return
+
+    await updateApplicationStatus(app.createdAt, {
+      favoriteAt: app.favoriteAt ? null : new Date().toISOString(),
+    })
+    await loadApplications()
+  }
+
   // Update handleArchiveToggle
   const handleArchiveToggle = async (app: JobApplication) => {
     if (!app.createdAt) return
@@ -191,12 +202,18 @@ const List: React.FC = () => {
 
       const isAppApplied = !!app.appliedAt
       const isAppRejected = !!app.rejectedAt
+      const isAppFavorite = !!app.favoriteAt
 
-      if (isApplied && isRejected) return true
-      else if (isApplied && !isRejected) return isAppApplied && !isAppRejected
-      else if (!isApplied && isRejected) return isAppRejected
-      else if (!isAppApplied && !isAppRejected) return true
-      return false
+      let result = false
+
+      if (isApplied && isRejected) result = true
+      else if (isApplied && !isRejected) result = isAppApplied && !isAppRejected
+      else if (!isApplied && isRejected) result = isAppRejected
+      else if (!isAppApplied && !isAppRejected) result = true
+
+      if (isFavorite && !isAppFavorite) result = false
+
+      return result
     })
     .filter((app) => {
       if (!searchTerm) return true
@@ -223,6 +240,7 @@ const List: React.FC = () => {
         <Header
           showArchived={showArchived}
           searchTerm={searchTerm}
+          isFavorite={isFavorite}
           isApplied={isApplied}
           isRejected={isRejected}
           onSearchChange={setSearchTerm}
@@ -230,6 +248,7 @@ const List: React.FC = () => {
           onAddNew={() => setIsModalOpen(true)}
           onToggleApplied={() => setIsApplied(!isApplied)}
           onToggleRejected={() => setIsRejected(!isRejected)}
+          onToggleFavorite={() => setIsFavorite(!isFavorite)}
           onShowCalendar={() => setIsCalendarModalOpen(true)}
         />
 
@@ -246,6 +265,7 @@ const List: React.FC = () => {
               }}
               onApplyToggle={handleApplyToggle}
               onRejectToggle={handleRejectToggle}
+              onFavoriteToggle={handleFavoriteToggle}
               onArchiveToggle={handleArchiveToggle}
               onDelete={handleDelete}
             />

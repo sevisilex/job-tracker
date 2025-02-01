@@ -44,6 +44,9 @@ export const translations = {
       undoReject: 'Undo reject',
       archive: 'Archive',
       restore: 'Restore',
+      favorite: 'Favorite',
+      markAsFavorite: 'Mark as favorite',
+      undoFavorite: 'Undo favorite',
     },
     form: {
       title: 'Title',
@@ -138,6 +141,9 @@ export const translations = {
       undoReject: 'Ablehnung rückgängig machen',
       archive: 'Archivieren',
       restore: 'Wiederherstellen',
+      favorite: 'Favorit',
+      markAsFavorite: 'Als Favorit markieren',
+      undoFavorite: 'Favorit rückgängig machen',
     },
     form: {
       title: 'Titel',
@@ -231,6 +237,9 @@ export const translations = {
       undoReject: 'Cofnij odrzucenie',
       archive: 'Archiwizuj',
       restore: 'Przywróć',
+      favorite: 'Ulubiony',
+      markAsFavorite: 'Oznacz jako ulubiony',
+      undoFavorite: 'Cofnij ulubiony',
     },
     form: {
       title: 'Tytuł',

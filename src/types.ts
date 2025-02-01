@@ -10,6 +10,7 @@ export interface JobApplication {
   rejectedAt: string | null
   rejectedReason: string | null
   archivedAt: string | null
+  favoriteAt: string | null
 }
 
 // export type FormData = Omit<JobApplication, 'createdAt' | 'appliedAt' | 'rejectedAt' | 'archivedAt'>

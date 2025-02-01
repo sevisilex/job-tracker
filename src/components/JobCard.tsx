@@ -1,5 +1,5 @@
 import React from 'react'
-import { File, FilePen, CheckCircle, XCircle, Archive, RotateCcw, Trash2, ExternalLink } from 'lucide-react'
+import { File, FilePen, CheckCircle, XCircle, Archive, RotateCcw, Trash2, ExternalLink, Star } from 'lucide-react'
 import { useLanguage } from '../contexts/LanguageContext'
 import { JobApplication } from '../types'
 import { formatDate } from '../utils/dateFormatter'
@@ -11,6 +11,7 @@ interface JobCardProps {
   onApplyToggle: (app: JobApplication) => void
   onRejectToggle: (app: JobApplication) => void
   onArchiveToggle: (app: JobApplication) => void
+  onFavoriteToggle: (app: JobApplication) => void
   onDelete: (createdAt: string) => void
 }
 
@@ -20,11 +21,20 @@ const getBorderColor = (app: JobApplication): string => {
   return 'border-blue-500'
 }
 
-const JobCard: React.FC<JobCardProps> = ({ application: app, showArchived, onEdit, onApplyToggle, onRejectToggle, onArchiveToggle, onDelete }) => {
+const JobCard: React.FC<JobCardProps> = ({
+  application: app,
+  showArchived,
+  onEdit,
+  onFavoriteToggle,
+  onApplyToggle,
+  onRejectToggle,
+  onArchiveToggle,
+  onDelete,
+}) => {
   const { t } = useLanguage()
 
   return (
-    <div className={`bg-white p-4 rounded shadow-sm border-l-4 ${getBorderColor(app)}`}>
+    <div className={`p-4 rounded shadow-sm border-l-4 ${getBorderColor(app)} ${app.favoriteAt ? 'bg-yellow-100' : 'bg-white'}`}>
       <div className="flex justify-between items-start">
         <div>
           <h3 className="font-mono text-xl font-semibold">{app.title}</h3>
@@ -55,6 +65,11 @@ const JobCard: React.FC<JobCardProps> = ({ application: app, showArchived, onEdi
               {t('applications.archived_status')}: {formatDate(app.archivedAt)}
             </p>
           )}
+          {/* {app.favoriteAt && (
+            <p className="font-mono text-sm text-yellow-500">
+              {t('applications.favorite')}: {formatDate(app.favoriteAt)}
+            </p>
+          )} */}
         </div>
         <div className="flex flex-col gap-2">
           {!showArchived && (
@@ -62,6 +77,14 @@ const JobCard: React.FC<JobCardProps> = ({ application: app, showArchived, onEdi
               <div className="flex gap-2">
                 <button onClick={() => onEdit(app)} className="p-2 text-gray-600 hover:text-blue-500" title={t('common.edit')}>
                   <FilePen size={20} />
+                </button>
+
+                <button
+                  onClick={() => onFavoriteToggle(app)}
+                  className={`p-2 ${app.favoriteAt ? 'text-yellow-500' : 'text-gray-600'} hover:text-yellow-700`}
+                  title={t(app.favoriteAt ? 'applications.undoFavorite' : 'applications.markAsFavorite')}
+                >
+                  <Star size={20} />
                 </button>
 
                 <button

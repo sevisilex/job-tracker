@@ -8,12 +8,14 @@ interface HeaderProps {
   searchTerm: string
   isApplied: boolean
   isRejected: boolean
+  isFavorite: boolean
   onSearchChange: (value: string) => void
   onArchiveToggle: () => void
   onAddNew: () => void
   onToggleApplied: () => void
   onToggleRejected: () => void
   onShowCalendar: () => void
+  onToggleFavorite: () => void
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -21,11 +23,13 @@ const Header: React.FC<HeaderProps> = ({
   searchTerm,
   isApplied,
   isRejected,
+  isFavorite,
   onSearchChange,
   onArchiveToggle,
   onAddNew,
   onToggleApplied,
   onToggleRejected,
+  onToggleFavorite,
   onShowCalendar,
 }) => {
   const { t, language, setLanguage } = useLanguage()
@@ -140,6 +144,10 @@ const Header: React.FC<HeaderProps> = ({
           <label className="flex items-center gap-2 font-mono">
             <input type="checkbox" checked={isRejected} onChange={onToggleRejected} className="form-checkbox h-4 w-4 text-blue-500" />
             {t('applications.rejected')}
+          </label>
+          <label className="flex items-center gap-2 font-mono">
+            <input type="checkbox" checked={isFavorite} onChange={onToggleFavorite} className="form-checkbox h-4 w-4 text-blue-500" />
+            {t('applications.favorite')}
           </label>
         </div>
       )}
