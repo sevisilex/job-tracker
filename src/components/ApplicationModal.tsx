@@ -1,5 +1,5 @@
 import React from 'react'
-import { X } from 'lucide-react'
+import { Tag, X } from 'lucide-react'
 import { JobApplication, FormData, tagsStringToArray, tagsArrayToString } from '../types'
 import { useLanguage } from '../contexts/LanguageContext'
 import { formatDate } from '@/utils/dateFormatter'
@@ -51,6 +51,23 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
       })
     }
   }
+
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Uciecz specjalne znaki
+  };
+  
+  const extractTagsFromText = () => {
+    const text = `${formData.title} ${formData.description} ${formData.url} ${formData.url2 || ''}`.toLowerCase();
+    const matchedTags = predefinedTags.flat().filter(tag => {
+      const escapedTag = escapeRegExp(tag); // Uciecz tag
+      const regex = new RegExp(`\\b${escapedTag}\\b`, 'i'); // Dopasuj tylko całe słowa
+      return regex.test(text);
+    });
+    onFormDataChange({
+      ...formData,
+      tags: Array.from(new Set([...formData.tags, ...matchedTags])),
+    });
+  };
 
   if (!isOpen) return null
 
@@ -176,7 +193,21 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
           </div>
 
           <div>
-            <label className="font-mono block mb-2">{t('form.tags')}</label>
+            <div className="flex items-center justify-between">
+              <label className="font-mono block mb-2">{t('form.tags')}</label>
+              {disabled ? (
+                ''
+              ) : (
+                <button
+                  type="button"
+                  className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
+                  onClick={extractTagsFromText}
+                >
+                  <Tag className="h-4 w-4" />
+                  {t('form.extractTags')}
+                </button>
+              )}
+            </div>
             <input
               type="text"
               value={tagsArrayToString(formData.tags)}
