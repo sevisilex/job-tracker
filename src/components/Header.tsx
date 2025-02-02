@@ -136,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({
       </div>
 
       {!showArchived && (
-        <div className="flex gap-4 mb-4">
+        <div className={`inline-flex gap-4 mb-4 ${isFavorite ? 'bg-yellow-100' : ''}`}>
           <label className="flex items-center gap-2 font-mono">
             <input type="checkbox" checked={isApplied} onChange={onToggleApplied} className="form-checkbox h-4 w-4 text-blue-500" />
             {t('applications.applied')}
