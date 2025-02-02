@@ -43,6 +43,13 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
     ['linkedin', 'xing', 'myability', 'stepstone', 'join'],
   ]
 
+  const tagVariations: Record<string, string[]> = {
+    vue: ['vuejs', 'vue3', 'vue.js'],
+    node: ['nodejs', 'node.js'],
+    react: ['reactjs', 'react.js'],
+    // Add more mappings as needed
+  }
+
   const addTag = (newTag: string) => {
     if (!formData.tags.includes(newTag)) {
       onFormDataChange({
@@ -53,21 +60,32 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
   }
 
   const escapeRegExp = (string: string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Uciecz specjalne znaki
-  };
-  
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+
   const extractTagsFromText = () => {
-    const text = `${formData.title} ${formData.description} ${formData.url} ${formData.url2 || ''}`.toLowerCase();
-    const matchedTags = predefinedTags.flat().filter(tag => {
-      const escapedTag = escapeRegExp(tag); // Uciecz tag
-      const regex = new RegExp(`\\b${escapedTag}\\b`, 'i'); // Dopasuj tylko całe słowa
-      return regex.test(text);
-    });
+    const text = `${formData.title} ${formData.description} ${formData.url} ${formData.url2 || ''}`.toLowerCase()
+    const matchedTags = new Set(formData.tags)
+    predefinedTags
+      .reverse()
+      .flat()
+      .forEach((tag) => {
+        const escapedTag = escapeRegExp(tag)
+        const regex = new RegExp(`\\b${escapedTag}\\b`, 'i')
+        if (regex.test(text)) {
+          matchedTags.add(tag)
+        } else if (tagVariations[tag]) {
+          const variationsRegex = new RegExp(`\\b(${tagVariations[tag].map(escapeRegExp).join('|')})\\b`, 'i')
+          if (variationsRegex.test(text)) {
+            matchedTags.add(tag)
+          }
+        }
+      })
     onFormDataChange({
       ...formData,
-      tags: Array.from(new Set([...formData.tags, ...matchedTags])),
-    });
-  };
+      tags: Array.from(matchedTags),
+    })
+  }
 
   if (!isOpen) return null
 
@@ -198,11 +216,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, currentAppl
               {disabled ? (
                 ''
               ) : (
-                <button
-                  type="button"
-                  className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2"
-                  onClick={extractTagsFromText}
-                >
+                <button type="button" className="text-blue-500 hover:text-blue-700 font-mono flex items-center gap-2" onClick={extractTagsFromText}>
                   <Tag className="h-4 w-4" />
                   {t('form.extractTags')}
                 </button>
