@@ -25,6 +25,7 @@ export interface FormData {
   createdAt?: string
   appliedAt?: string
   rejectedAt?: string
+  favoriteAt?: string
 }
 
 export const tagsStringToArray = (tagsStr: string): string[] => {

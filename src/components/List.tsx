@@ -51,6 +51,7 @@ const List: React.FC = () => {
       appliedAt: formData.appliedAt || currentApplication?.appliedAt || null,
       rejectedAt: formData.rejectedAt || currentApplication?.rejectedAt || null,
       archivedAt: currentApplication?.archivedAt || null,
+      favoriteAt: currentApplication?.favoriteAt || null,
       rejectedReason: formData.rejectedReason ?? null,
     }
 
@@ -260,7 +261,7 @@ const List: React.FC = () => {
               showArchived={showArchived}
               onEdit={(app) => {
                 setCurrentApplication(app)
-                setFormData(app)
+                setFormData(app as FormData) // BUG: check type it
                 setIsModalOpen(true)
               }}
               onApplyToggle={handleApplyToggle}
