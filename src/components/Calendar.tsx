@@ -52,7 +52,6 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
     return counts
   }
 
-  // Generuj dni dla aktualnego miesiąca
   const getDaysInMonth = () => {
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth()
@@ -98,7 +97,6 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
     const weeks: DayProps[][] = []
     let currentWeek: DayProps[] = []
 
-    // Add empty days at the start
     const firstDay = days[0].date
     const emptyDaysStart = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1
     for (let i = 0; i < emptyDaysStart; i++) {
@@ -116,7 +114,6 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
       }
     })
 
-    // Add empty days at the end if needed
     if (currentWeek.length > 0) {
       const lastDay = days[days.length - 1].date
       const emptyDaysEnd = 7 - currentWeek.length
@@ -180,7 +177,7 @@ const Calendar: React.FC<CalendarProps> = ({ applications, onDateClick }) => {
                     day.date.getMonth() === currentDate.getMonth()
                       ? hasApplications
                         ? 'bg-blue-50 hover:bg-blue-100 cursor-pointer'
-                        : 'cursor-default' // zmiana z cursor-pointer na cursor-default dla pustych dni
+                        : 'cursor-default'
                       : 'text-gray-300 cursor-default'
                   }`}
                   onClick={() => {

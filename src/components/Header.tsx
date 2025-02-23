@@ -49,7 +49,6 @@ const Header: React.FC<HeaderProps> = ({
       alert('Błąd podczas importowania: ' + (error as Error).message)
     }
 
-    // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }

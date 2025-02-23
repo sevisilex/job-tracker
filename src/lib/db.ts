@@ -9,13 +9,10 @@ export const initDB = async (): Promise<IDBDatabase> => {
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result
 
-      // Jeśli istnieje stary store, usuń go
       if (db.objectStoreNames.contains('applications')) {
         if (!confirm('Uwaga update, czy mogę usuać stare dane?')) return
         db.deleteObjectStore('applications')
       }
-
-      // Utwórz nowy store z createdAt jako kluczem
       const store = db.createObjectStore('applications', {
         keyPath: 'createdAt',
       })

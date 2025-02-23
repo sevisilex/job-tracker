@@ -101,7 +101,6 @@ const List: React.FC = () => {
     onConfirm: () => {},
   })
 
-  // Helper function for confirmation
   const showConfirmation = async (message: string): Promise<boolean> => {
     return new Promise((resolve) => {
       setConfirmModal({
@@ -128,7 +127,6 @@ const List: React.FC = () => {
     })
   }
 
-  // Update handleApplyToggle
   const handleApplyToggle = async (app: JobApplication) => {
     if (!app.createdAt) return
 
@@ -143,7 +141,6 @@ const List: React.FC = () => {
     }
   }
 
-  // Update handleRejectToggle
   const handleRejectToggle = async (app: JobApplication) => {
     if (!app.createdAt) return
 
@@ -169,7 +166,6 @@ const List: React.FC = () => {
     }
   }
 
-  // Update handleFavoriteToggle
   const handleFavoriteToggle = async (app: JobApplication) => {
     if (!app.createdAt) return
 
@@ -179,7 +175,6 @@ const List: React.FC = () => {
     await loadApplications()
   }
 
-  // Update handleArchiveToggle
   const handleArchiveToggle = async (app: JobApplication) => {
     if (!app.createdAt) return
 
@@ -194,7 +189,6 @@ const List: React.FC = () => {
     }
   }
 
-  // Update handleDelete
   const handleDelete = async (createdAt: string) => {
     const confirmed = await showConfirmation(t('list.confirmDelete'))
     if (confirmed) {

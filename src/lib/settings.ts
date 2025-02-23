@@ -45,11 +45,4 @@ export const setSetting = <K extends keyof Settings>(key: K, value: Settings[K])
   saveSettings({ ...loadSettings(), [key]: value })
 }
 
-// export const updateFilters = (filters: Partial<SearchFilters>) => {
-//   const current = loadSettings()
-//   const updatedFilters = { ...current.filters, ...filters }
-//   saveSettings({ ...current, filters: updatedFilters })
-//   return updatedFilters
-// }
-
 export const settings = loadSettings()

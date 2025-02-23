@@ -1,50 +1,126 @@
-# React + TypeScript + Vite
+# 📋 Job Applications List
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application built with React and TypeScript that helps you track and manage your job applications. Perfect for job seekers who want to stay organized during their job search journey.
 
-Currently, two official plugins are available:
+## 📸 Screenshot
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<!-- ![Job Applications List](/docs/images/screenshot.jpg) -->
+[coming soon]
 
-## Expanding the ESLint configuration
+## 🚀 Live Demo
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+<!-- [![Open on GitHub Pages](/docs/buttons/github-demo.svg)](https://sevisilex.github.io/job-tracker/) -->
+[coming soon]
 
-- Configure the top-level `parserOptions` property like this:
+## 📖 Usage
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. **Adding Applications**
+   - Click "Add" button
+   - Fill in job details (title, description, location)
+   - Add relevant tags
+   - Save the application
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. **Managing Applications**
+   - Mark as applied when you send your application
+   - Record rejections with optional feedback
+   - Star important applications
+   - Move old applications to archive
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+3. **Finding Applications**
+   - Use search to find specific applications
+   - Filter by status (applied/rejected)
+   - Use calendar view to see applications by date
+   - Check archived applications separately
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## ✨ Features
+
+- 📝 Track job applications with detailed information:
+  - Job title and description
+  - Company location
+  - Application URLs
+  - Custom tags for easy filtering
+  - Application dates
+
+- 📊 Application Status Management:
+  - Mark applications as sent
+  - Record rejections with optional reasons
+  - Flag favorites for special attention
+  - Archive old applications
+
+- 🔍 Powerful Search and Filter:
+  - Search through titles, descriptions, locations, and tags
+  - Filter by application status (applied/rejected)
+  - Filter favorite applications
+  - Calendar view for temporal overview
+
+- 🌐 Multi-language Support:
+  - English (EN)
+  - German (DE)
+  - Polish (PL)
+
+- 💾 Data Management:
+  - Export all applications to JSON
+  - Import applications from JSON
+  - Local data storage (IndexedDB)
+  - Conflict resolution during import
+
+## 🛠️ Built With
+
+- [React](https://reactjs.org/) - UI Framework
+- [TypeScript](https://www.typescriptlang.org/) - Type Safety
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [Lucide Icons](https://lucide.dev/) - Icons
+- [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) - Local Storage
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+   ```sh
+   git clone https://github.com/sevisilex/job-tracker.git
+   ```
+
+2. Install dependencies
+   ```sh
+   npm install
+   ```
+
+3. Start development server
+   ```sh
+   npm run dev
+   ```
+
+4. Build for production
+   ```sh
+   npm run build
+   ```
+
+## 📝 License
+
+Distributed under the MIT License.
+
+## 📧 Contact
+
+| Type              | Link                                                                                                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 👤 Author         | [Dariusz Krzeminski](mailto:2440034+sevisilex@users.noreply.github.com)                                                                                      |
+| 📂 GitHub         | [github.com/sevisilex](https://github.com/sevisilex)                                                                                                         |
+| 🔗 Project        | [job-tracker](https://github.com/sevisilex/job-tracker)                                                                                        |
+| 🛠️ Issues<br><br> | 🐛 [Report a bug](https://github.com/sevisilex/job-tracker/issues)<br> ✨ [Request a feature](https://github.com/sevisilex/job-tracker/issues) |
+
+
+## ☕ Support
+
+If you find this project helpful, consider buying me a coffee! 💕
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/svslx)
+
+---
+
+⭐️ Star this repository if you find it helpful!
