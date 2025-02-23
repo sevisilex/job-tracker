@@ -68,7 +68,6 @@ export const AboutModal = ({ isOpen, onClose }: AboutModalProps) => {
             <a
               href="https://ko-fi.com/svslx"
               target="_blank"
-              rel="noopener noreferrer"
               className="group inline-flex px-4 py-2 bg-yellow-400 text-black rounded hover:bg-black hover:text-white duration-300 transition-colors"
             >
               <span className="relative">
