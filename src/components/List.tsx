@@ -9,6 +9,7 @@ import PromptModal from './PromptModal'
 import CalendarModal from './CalendarModal'
 import { formatDate } from '@/utils/dateFormatter'
 import { useLanguage } from '../contexts/LanguageContext'
+import { getSetting, setSetting } from '../lib/settings'
 
 const List: React.FC = () => {
   const { t } = useLanguage()
@@ -17,11 +18,17 @@ const List: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentApplication, setCurrentApplication] = useState<JobApplication | null>(null)
   const [showArchived, setShowArchived] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isApplied, setIsApplied] = useState(true)
-  const [isRejected, setIsRejected] = useState(true)
-  const [isFavorite, setIsFavorite] = useState(false)
+
+  const savedFilters = getSetting('filters')
+  const [searchTerm, setSearchTerm] = useState(savedFilters.searchTerm)
+  const [isApplied, setIsApplied] = useState(savedFilters.isApplied)
+  const [isRejected, setIsRejected] = useState(savedFilters.isRejected)
+  const [isFavorite, setIsFavorite] = useState(savedFilters.isFavorite)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
+
+  useEffect(() => {
+    setSetting('filters', { searchTerm, isApplied, isRejected, isFavorite })
+  }, [searchTerm, isApplied, isRejected, isFavorite])
 
   const [formData, setFormData] = useState<FormData>({
     title: '',
