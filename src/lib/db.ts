@@ -1,8 +1,10 @@
+const INDEXDB_NAME = import.meta.env.VITE_INDEXDB_NAME || 'sv_job-tracker'
+
 import { JobApplication } from '../types'
 
 export const initDB = async (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('sv_job-tracker', 4) // Zwiększamy wersję bazy danych
+    const request = indexedDB.open(INDEXDB_NAME, 4)
     request.onerror = () => reject(request.error)
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result

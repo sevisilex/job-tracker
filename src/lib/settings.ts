@@ -1,3 +1,5 @@
+const STORAGE_NAME = import.meta.env.VITE_STORAGE_NAME || 'sv_job-tracker'
+
 export type Language = 'en' | 'de' | 'pl'
 
 export interface SearchFilters {
@@ -12,8 +14,6 @@ interface Settings {
   lastChanged?: string
   filters: SearchFilters
 }
-
-const STORAGE_NAME = import.meta.env.VITE_STORAGE_NAME || 'cv-settings'
 
 const defaultSettings: Readonly<Settings> = {
   language: 'en',
