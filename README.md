@@ -9,8 +9,7 @@ A web application built with React and TypeScript that helps you track and manag
 
 ## 🚀 Live Demo
 
-<!-- [![Open on GitHub Pages](/docs/buttons/github-demo.svg)](https://sevisilex.github.io/job-tracker/) -->
-[coming soon]
+[![Open on GitHub Pages](/docs/buttons/github-demo.svg)](https://sevisilex.github.io/job-tracker/)
 
 ## 📖 Usage
 
